@@ -3,12 +3,12 @@ import React from 'react';
 import { Component as ComponentModel } from '../../model/component';
 import { useComponentModel } from './hooks/useComponentModel';
 import { useSelection } from './hooks/useSelection';
-import Component from './components/component/Component';
-import SideBar from './components/sideBar/SideBar';
+import Component from './components/Component';
+import SideBar from './components/SideBar';
 
 const Diagram: React.FC = () => {
-  const { tree, addComponent, deleteComponent, updateComponent } = useComponentModel();
-  const { selection, selectComponent } = useSelection();
+  const { tree, addComponent, deleteComponent, updateComponent, addProp, addHook } = useComponentModel();
+  const { selection, selectComponent, selectProp, selectHook } = useSelection();
 
   const handleAddComponent = (parentId: string) => {
     const componentId = addComponent(parentId);
@@ -22,6 +22,16 @@ const Diagram: React.FC = () => {
 
   const handleUpdateComponent = (componentId: string, data: Partial<ComponentModel>) =>
     updateComponent(componentId, data);
+
+  const handleAddProp = (componentId: string) => {
+    const propIndex = addProp(componentId);
+    selectProp(componentId, propIndex);
+  };
+
+  const handleAddHook = (componentId: string) => {
+    const hookIndex = addHook(componentId);
+    selectHook(componentId, hookIndex);
+  };
 
   return (
     <div className="row no-gutters flex-fill">
@@ -48,10 +58,16 @@ const Diagram: React.FC = () => {
       <div className="col-3 border-left d-flex">
         <SideBar
           selectedComponentId={selection.componentId}
+          selectedPropIndex={selection.propIndex}
+          selectedHookIndex={selection.hookIndex}
           tree={tree}
           onAddComponent={handleAddComponent}
           onDeleteComponent={handleDeleteComponent}
           onUpdateComponent={handleUpdateComponent}
+          onAddProp={handleAddProp}
+          onSelectProp={selectProp}
+          onAddHook={handleAddHook}
+          onSelectHook={selectHook}
         />
       </div>
     </div>

@@ -62,6 +62,34 @@ const handleDeleteComponent = (componentId: string) => (state: State): State => 
   };
 };
 
+const handleAddProp = (componentId: string) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        properties: [...state.tree.components[componentId].properties, { name: 'prop', type: 'string' }]
+      }
+    }
+  }
+});
+
+const handleAddHook = (componentId: string) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        hooks: [...state.tree.components[componentId].hooks, { name: 'useHook' }]
+      }
+    }
+  }
+});
+
 const handleUpdateComponent = (componentId: string, data: Partial<Component>) => (state: State): State => ({
   ...state,
   tree: {
@@ -87,10 +115,22 @@ export const useComponentModel = () => {
 
   const updateComponent = (id: string, data: Partial<Component>) => setState(handleUpdateComponent(id, data));
 
+  const addProp = (componentId: string) => {
+    setState(handleAddProp(componentId));
+    return state.tree.components[componentId].properties.length;
+  };
+
+  const addHook = (componentId: string) => {
+    setState(handleAddHook(componentId));
+    return state.tree.components[componentId].hooks.length;
+  };
+
   return {
     ...state,
     addComponent,
     deleteComponent,
-    updateComponent
+    updateComponent,
+    addProp,
+    addHook
   };
 };

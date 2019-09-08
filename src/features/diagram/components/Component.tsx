@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { ComponentTree } from '../../../../model/component';
+import { ComponentTree } from '../../../model/component';
 
 interface Props {
   id: string;
@@ -31,9 +31,9 @@ const Component: React.FC<Props> = ({ id, selectedComponentId, tree, onSelect })
           {hooks.length > 0 && (
             <div className="col-12 px-2">
               <ul className="list-inline m-0">
-                {hooks.map(x => (
-                  <li key={x.name} className="list-inline-item">
-                    {x}
+                {hooks.map((x, i) => (
+                  <li key={i} className="list-inline-item">
+                    {x.name}
                   </li>
                 ))}
               </ul>
