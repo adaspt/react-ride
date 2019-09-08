@@ -6,8 +6,18 @@ import Component from './components/component/Component';
 import SideBar from './components/sideBar/SideBar';
 
 const Diagram: React.FC = () => {
-  const { tree } = useComponentModel();
+  const { tree, addComponent, deleteComponent } = useComponentModel();
   const { selection, selectComponent } = useSelection();
+
+  const handleAddComponent = (parentId: string) => {
+    const componentId = addComponent(parentId);
+    selectComponent(componentId);
+  };
+
+  const handleDeleteComponent = (componentId: string) => {
+    deleteComponent(componentId);
+    selectComponent(null);
+  };
 
   return (
     <div className="row no-gutters flex-fill">
@@ -32,7 +42,12 @@ const Diagram: React.FC = () => {
         </div>
       </div>
       <div className="col-3 border-left d-flex">
-        <SideBar selectedComponentId={selection.componentId} tree={tree} />
+        <SideBar
+          selectedComponentId={selection.componentId}
+          tree={tree}
+          onAddComponent={handleAddComponent}
+          onDeleteComponent={handleDeleteComponent}
+        />
       </div>
     </div>
   );

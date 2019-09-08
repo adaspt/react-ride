@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import omit from 'ramda/es/omit';
+import without from 'ramda/es/without';
 
 import { ComponentTree } from '../../../model/component';
+import { uniqueId } from '../../../utils/strings';
 
 interface State {
   tree: ComponentTree;
@@ -35,12 +38,45 @@ const handleAddComponent = (parentId: string, id: string) => (state: State): Sta
   }
 });
 
+const handleDeleteComponent = (componentId: string) => (state: State): State => {
+  const parentId = state.tree.components[componentId].parentId!;
+
+  const componentIdsToRemove: string[] = [];
+  const collectComponentsToRemove = (id: string) => {
+    componentIdsToRemove.push(id);
+    state.tree.byParent[id].forEach(collectComponentsToRemove);
+  };
+
+  collectComponentsToRemove(componentId);
+
+  return {
+    ...state,
+    tree: {
+      ...state.tree,
+      components: omit(componentIdsToRemove, state.tree.components),
+      byParent: {
+        ...omit(componentIdsToRemove, state.tree.byParent),
+        [parentId]: without([componentId], state.tree.byParent[parentId])
+      }
+    }
+  };
+};
+
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
 
-  const addComponent = (parentId: string) => setState(handleAddComponent(parentId, 'random'));
+  const addComponent = (parentId: string) => {
+    const componentId = uniqueId();
+    setState(handleAddComponent(parentId, componentId));
+
+    return componentId;
+  };
+
+  const deleteComponent = (id: string) => setState(handleDeleteComponent(id));
+
   return {
     ...state,
-    addComponent
+    addComponent,
+    deleteComponent
   };
 };

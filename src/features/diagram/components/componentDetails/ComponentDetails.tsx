@@ -6,9 +6,11 @@ import SizeInput from '../../../../components/sizeInput/SizeInput';
 
 interface Props {
   component: Component;
+  onAddComponent: (parentId: string) => void;
+  onDeleteComponent: (componentId: string) => void;
 }
 
-const ComponentDetails: React.FC<Props> = ({ component }) => {
+const ComponentDetails: React.FC<Props> = ({ component, onAddComponent, onDeleteComponent }) => {
   return (
     <>
       <Panel>
@@ -21,10 +23,14 @@ const ComponentDetails: React.FC<Props> = ({ component }) => {
             <SizeInput value={component.width} onChange={() => {}} />
           </div>
           <div className="btn-toolbar">
-            <button type="button" className="btn btn-secondary dropdown-toggle mr-2">
+            <button
+              type="button"
+              className="btn btn-secondary dropdown-toggle mr-2"
+              onClick={() => onAddComponent(component.id)}
+            >
               Add
             </button>
-            <button type="button" className="btn btn-danger">
+            <button type="button" className="btn btn-danger" onClick={() => onDeleteComponent(component.id)}>
               Delete
             </button>
           </div>
