@@ -14,10 +14,8 @@ const handleSelectComponent = (componentId: string | null) => (state: State): St
 
 export const useSelection = () => {
   const [selection, setSelection] = useState(initialState);
-  const selectComponent = (componentId: string | null) => {
-    console.log('SELECT COMPONENT', componentId);
-    setSelection(handleSelectComponent(componentId));
-  };
+
+  const selectComponent = (componentId: string | null) => setSelection(handleSelectComponent(componentId));
 
   return {
     selection,
