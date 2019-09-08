@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import omit from 'ramda/es/omit';
 import remove from 'ramda/es/remove';
 import update from 'ramda/es/update';
 import without from 'ramda/es/without';
 
-import { ComponentTree, Component, ComponentProperty, ComponentHook } from '../../../model/component';
+import {
+  ComponentTree,
+  Component,
+  ComponentProperty,
+  ComponentHook,
+  saveComponentTree,
+  loadComponentTree
+} from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
+import { useDebouncedEffect } from '../../../hooks/useDebouncedEffect';
 
 interface State {
   tree: ComponentTree;
@@ -14,12 +22,10 @@ interface State {
 const initialState: State = {
   tree: {
     components: {
-      root: { id: 'root', parentId: null, name: 'App', width: 12, properties: [], hooks: [] },
-      diagram: { id: 'diagram', parentId: 'root', name: 'Diagram', width: 12, properties: [], hooks: [] }
+      root: { id: 'root', parentId: null, name: 'App', width: 12, properties: [], hooks: [] }
     },
     byParent: {
-      root: ['diagram'],
-      diagram: []
+      root: []
     }
   }
 };
@@ -173,6 +179,22 @@ const handleDeleteHook = (componentId: string, hookIndex: number) => (state: Sta
 
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    const tree = loadComponentTree();
+    if (tree) {
+      setState({ tree });
+    }
+  }, []);
+
+  useDebouncedEffect(
+    () => {
+      console.log('Saving...');
+      saveComponentTree(state.tree);
+    },
+    5000,
+    [state.tree]
+  );
 
   const addComponent = (parentId: string) => {
     const componentId = uniqueId();
