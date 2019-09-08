@@ -55,6 +55,16 @@ const ComponentDetails: React.FC<Props> = ({
     changeTab(tab);
   };
 
+  const handleAddProp = () => {
+    changeTab('Props');
+    onAddProp(component.id);
+  };
+
+  const handleAddHook = () => {
+    changeTab('Hooks');
+    onAddHook(component.id);
+  };
+
   return (
     <>
       <Panel>
@@ -81,10 +91,10 @@ const ComponentDetails: React.FC<Props> = ({
             >
               +Comp
             </button>
-            <button type="button" className="btn btn-secondary mr-2" onClick={() => onAddProp(component.id)}>
+            <button type="button" className="btn btn-secondary mr-2" onClick={handleAddProp}>
               +Prop
             </button>
-            <button type="button" className="btn btn-secondary mr-2" onClick={() => onAddHook(component.id)}>
+            <button type="button" className="btn btn-secondary mr-2" onClick={handleAddHook}>
               +Hook
             </button>
             <button
@@ -122,7 +132,7 @@ const ComponentDetails: React.FC<Props> = ({
           </ul>
         </div>
         <div className="flex-fill position-relative">
-          <div className="absolute-fill">
+          <div className="absolute-fill overflow-auto">
             {selectedTab === 'Props' && (
               <ComponentProperties
                 properties={component.properties}
