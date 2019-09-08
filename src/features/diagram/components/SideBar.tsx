@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ComponentTree, Component, ComponentProperty } from '../../../model/component';
+import { ComponentTree, Component, ComponentProperty, ComponentHook } from '../../../model/component';
 import ComponentDetails from './ComponentDetails';
 import PropDetails from './PropDetails';
 import HookDetails from './HookDetails';
@@ -19,6 +19,8 @@ interface Props {
   onDeleteProp: (componentId: string, propIndex: number) => void;
   onAddHook: (componentId: string) => void;
   onSelectHook: (componentId: string, hookIndex: number | null) => void;
+  onUpdateHook: (componentId: string, propIndex: number, data: Partial<ComponentHook>) => void;
+  onDeleteHook: (componentId: string, propIndex: number) => void;
 }
 
 const SideBar: React.FC<Props> = ({
@@ -34,7 +36,9 @@ const SideBar: React.FC<Props> = ({
   onUpdateProp,
   onDeleteProp,
   onAddHook,
-  onSelectHook
+  onSelectHook,
+  onUpdateHook,
+  onDeleteHook
 }) => {
   const component = !!selectedComponentId && tree.components[selectedComponentId];
   const prop = component && selectedPropIndex != null && component.properties[selectedPropIndex];
@@ -66,7 +70,15 @@ const SideBar: React.FC<Props> = ({
           onDelete={() => onDeleteProp(component.id, selectedPropIndex!)}
         />
       )}
-      {component && hook && <HookDetails key={`${component.id}:${selectedHookIndex}`} />}
+      {component && hook && (
+        <HookDetails
+          key={`${component.id}:${selectedHookIndex}`}
+          hook={hook}
+          onUpdateHook={data => onUpdateHook(component.id, selectedHookIndex!, data)}
+          onClose={() => onSelectHook(component.id, null)}
+          onDelete={() => onDeleteHook(component.id, selectedHookIndex!)}
+        />
+      )}
     </div>
   );
 };

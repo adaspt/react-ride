@@ -4,7 +4,7 @@ import remove from 'ramda/es/remove';
 import update from 'ramda/es/update';
 import without from 'ramda/es/without';
 
-import { ComponentTree, Component, ComponentProperty } from '../../../model/component';
+import { ComponentTree, Component, ComponentProperty, ComponentHook } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
 
 interface State {
@@ -137,6 +137,40 @@ const handleDeleteProp = (componentId: string, propIndex: number) => (state: Sta
   }
 });
 
+const handleUpdateHook = (componentId: string, hookIndex: number, data: Partial<ComponentHook>) => (
+  state: State
+): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        hooks: update(
+          hookIndex,
+          { ...state.tree.components[componentId].hooks[hookIndex], ...data },
+          state.tree.components[componentId].hooks
+        )
+      }
+    }
+  }
+});
+
+const handleDeleteHook = (componentId: string, hookIndex: number) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        hooks: remove(hookIndex, 1, state.tree.components[componentId].hooks)
+      }
+    }
+  }
+});
+
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
 
@@ -167,6 +201,12 @@ export const useComponentModel = () => {
     return state.tree.components[componentId].hooks.length;
   };
 
+  const updateHook = (componentId: string, hookIndex: number, data: Partial<ComponentHook>) =>
+    setState(handleUpdateHook(componentId, hookIndex, data));
+
+  const deleteHook = (componentId: string, hookIndex: number) =>
+    setState(handleDeleteHook(componentId, hookIndex));
+
   return {
     ...state,
     addComponent,
@@ -175,6 +215,8 @@ export const useComponentModel = () => {
     addProp,
     updateProp,
     deleteProp,
-    addHook
+    addHook,
+    updateHook,
+    deleteHook
   };
 };

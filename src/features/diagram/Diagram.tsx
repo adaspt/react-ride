@@ -15,7 +15,9 @@ const Diagram: React.FC = () => {
     addProp,
     updateProp,
     deleteProp,
-    addHook
+    addHook,
+    updateHook,
+    deleteHook
   } = useComponentModel();
   const { selection, selectComponent, selectProp, selectHook } = useSelection();
 
@@ -45,6 +47,11 @@ const Diagram: React.FC = () => {
   const handleAddHook = (componentId: string) => {
     const hookIndex = addHook(componentId);
     selectHook(componentId, hookIndex);
+  };
+
+  const handleDeleteHook = (componentId: string, hookIndex: number) => {
+    deleteHook(componentId, hookIndex);
+    selectHook(componentId, null);
   };
 
   return (
@@ -84,6 +91,8 @@ const Diagram: React.FC = () => {
           onDeleteProp={handleDeleteProp}
           onAddHook={handleAddHook}
           onSelectHook={selectHook}
+          onUpdateHook={updateHook}
+          onDeleteHook={handleDeleteHook}
         />
       </div>
     </div>
