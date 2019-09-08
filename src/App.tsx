@@ -1,7 +1,14 @@
 import React from 'react';
+import Navbar from './components/Navbar';
+import Diagram from './features/diagram/Diagram';
 
 const App: React.FC = () => {
-  return <div className="container-fluid">Hello React Bricks</div>;
+  return (
+    <>
+      <Navbar />
+      <Diagram />
+    </>
+  );
 };
 
 export default App;
