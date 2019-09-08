@@ -2,7 +2,7 @@ import { useState } from 'react';
 import omit from 'ramda/es/omit';
 import without from 'ramda/es/without';
 
-import { ComponentTree } from '../../../model/component';
+import { ComponentTree, Component } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
 
 interface State {
@@ -62,6 +62,17 @@ const handleDeleteComponent = (componentId: string) => (state: State): State => 
   };
 };
 
+const handleUpdateComponent = (componentId: string, data: Partial<Component>) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: { ...state.tree.components[componentId], ...data }
+    }
+  }
+});
+
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
 
@@ -74,9 +85,12 @@ export const useComponentModel = () => {
 
   const deleteComponent = (id: string) => setState(handleDeleteComponent(id));
 
+  const updateComponent = (id: string, data: Partial<Component>) => setState(handleUpdateComponent(id, data));
+
   return {
     ...state,
     addComponent,
-    deleteComponent
+    deleteComponent,
+    updateComponent
   };
 };

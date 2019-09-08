@@ -1,12 +1,13 @@
 import React from 'react';
 
+import { Component as ComponentModel } from '../../model/component';
 import { useComponentModel } from './hooks/useComponentModel';
 import { useSelection } from './hooks/useSelection';
 import Component from './components/component/Component';
 import SideBar from './components/sideBar/SideBar';
 
 const Diagram: React.FC = () => {
-  const { tree, addComponent, deleteComponent } = useComponentModel();
+  const { tree, addComponent, deleteComponent, updateComponent } = useComponentModel();
   const { selection, selectComponent } = useSelection();
 
   const handleAddComponent = (parentId: string) => {
@@ -18,6 +19,9 @@ const Diagram: React.FC = () => {
     deleteComponent(componentId);
     selectComponent(null);
   };
+
+  const handleUpdateComponent = (componentId: string, data: Partial<ComponentModel>) =>
+    updateComponent(componentId, data);
 
   return (
     <div className="row no-gutters flex-fill">
@@ -47,6 +51,7 @@ const Diagram: React.FC = () => {
           tree={tree}
           onAddComponent={handleAddComponent}
           onDeleteComponent={handleDeleteComponent}
+          onUpdateComponent={handleUpdateComponent}
         />
       </div>
     </div>

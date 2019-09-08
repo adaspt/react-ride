@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Component } from '../../../../model/component';
+import { useInput } from '../../../../hooks/useInput';
 import Panel from '../../../../components/panel/Panel';
 import SizeInput from '../../../../components/sizeInput/SizeInput';
 
@@ -8,19 +9,46 @@ interface Props {
   component: Component;
   onAddComponent: (parentId: string) => void;
   onDeleteComponent: (componentId: string) => void;
+  onUpdateComponent: (componentId: string, data: Partial<Component>) => void;
 }
 
-const ComponentDetails: React.FC<Props> = ({ component, onAddComponent, onDeleteComponent }) => {
+const ComponentDetails: React.FC<Props> = ({
+  component,
+  onAddComponent,
+  onDeleteComponent,
+  onUpdateComponent
+}) => {
+  const nameInput = useInput(component.name, name => onUpdateComponent(component.id, { name }));
+  const widthInput = useInput(component.width, width => onUpdateComponent(component.id, { width }));
+
+  const handleKeyDown = (callback: () => void): React.KeyboardEventHandler => e => {
+    if (e.key === 'Enter') {
+      callback();
+    }
+  };
+
+  const handleWidthChange = (width: number) => {
+    widthInput.change(width);
+    widthInput.submit();
+  };
+
   return (
     <>
       <Panel>
         <div className="card-header">Component</div>
         <div className="card-body">
           <div className="form-group">
-            <input type="text" className="form-control" placeholder="Name" defaultValue={component.name} />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Name"
+              value={nameInput.value}
+              onChange={e => nameInput.change(e.target.value)}
+              onKeyDown={handleKeyDown(nameInput.submit)}
+            />
           </div>
           <div className="form-group">
-            <SizeInput value={component.width} onChange={() => {}} />
+            <SizeInput value={widthInput.value} onChange={handleWidthChange} />
           </div>
           <div className="btn-toolbar">
             <button
@@ -30,7 +58,12 @@ const ComponentDetails: React.FC<Props> = ({ component, onAddComponent, onDelete
             >
               Add
             </button>
-            <button type="button" className="btn btn-danger" onClick={() => onDeleteComponent(component.id)}>
+            <button
+              type="button"
+              className="btn btn-danger"
+              disabled={!component.parentId}
+              onClick={() => onDeleteComponent(component.id)}
+            >
               Delete
             </button>
           </div>

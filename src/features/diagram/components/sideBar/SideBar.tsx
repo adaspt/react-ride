@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ComponentTree } from '../../../../model/component';
+import { ComponentTree, Component } from '../../../../model/component';
 import Panel from '../../../../components/panel/Panel';
 import ComponentDetails from '../componentDetails/ComponentDetails';
 
@@ -9,9 +9,16 @@ interface Props {
   tree: ComponentTree;
   onAddComponent: (parentId: string) => void;
   onDeleteComponent: (componentId: string) => void;
+  onUpdateComponent: (componentId: string, data: Partial<Component>) => void;
 }
 
-const SideBar: React.FC<Props> = ({ selectedComponentId, tree, onAddComponent, onDeleteComponent }) => {
+const SideBar: React.FC<Props> = ({
+  selectedComponentId,
+  tree,
+  onAddComponent,
+  onDeleteComponent,
+  onUpdateComponent
+}) => {
   const component = selectedComponentId && tree.components[selectedComponentId];
   return (
     <div className="d-flex flex-column flex-fill">
@@ -21,6 +28,7 @@ const SideBar: React.FC<Props> = ({ selectedComponentId, tree, onAddComponent, o
           component={component}
           onAddComponent={onAddComponent}
           onDeleteComponent={onDeleteComponent}
+          onUpdateComponent={onUpdateComponent}
         />
       )}
       {selectedComponentId && (
