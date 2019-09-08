@@ -1,40 +1,53 @@
 import React from 'react';
+import clsx from 'clsx';
 
-import { ComponentWidth } from '../../../../model/component';
+import { ComponentTree } from '../../../../model/component';
 
 interface Props {
-  name: string;
-  width: ComponentWidth;
-  hooks: string[];
+  id: string;
+  selectedComponentId: string | null;
+  tree: ComponentTree;
+  onSelect: (componentId: string | null) => void;
 }
 
-const WIDTH_MAP: Record<ComponentWidth, string> = {
-  1: 'col-2',
-  2: 'col-4',
-  3: 'col-6',
-  4: 'col-8',
-  5: 'col-10',
-  6: 'col-12'
-};
+const Component: React.FC<Props> = ({ id, selectedComponentId, tree, onSelect }) => {
+  const { name, width, properties, hooks } = tree.components[id];
+  const children = tree.byParent[id];
+  const selected = selectedComponentId === id;
 
-const Component: React.FC<Props> = ({ name, width, hooks, children }) => {
+  const handleSelect: React.MouseEventHandler = e => {
+    e.stopPropagation();
+    onSelect(id);
+  };
+
   return (
-    <div className={`${WIDTH_MAP[width]} p-2`}>
-      <div className="card">
-        <div className="card-header py-1">{name}</div>
+    <div className={`col-${width} p-2`}>
+      <div className={clsx('card', selected ? 'text-white bg-primary' : 'text-dark')} onClick={handleSelect}>
+        <div className="card-header py-1">
+          {name}
+          {!!properties.length && `(${properties.map(x => x.name).join(', ')})`}
+        </div>
         <div className="row no-gutters p-2">
           {hooks.length > 0 && (
             <div className="col-12 px-2">
               <ul className="list-inline m-0">
                 {hooks.map(x => (
-                  <li key={x} className="list-inline-item">
+                  <li key={x.name} className="list-inline-item">
                     {x}
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          {children}
+          {children.map(childId => (
+            <Component
+              key={childId}
+              id={childId}
+              selectedComponentId={selectedComponentId}
+              tree={tree}
+              onSelect={onSelect}
+            />
+          ))}
         </div>
       </div>
     </div>

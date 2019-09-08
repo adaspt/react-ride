@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { ComponentTree } from '../../../../model/component';
-import Component from './Component';
+import SideBar from './SideBar';
 
 it('renders without crashing', () => {
   const tree: ComponentTree = {
@@ -15,6 +15,6 @@ it('renders without crashing', () => {
   };
 
   const div = document.createElement('div');
-  ReactDOM.render(<Component id="root" selectedComponentId={null} tree={tree} onSelect={() => {}} />, div);
+  ReactDOM.render(<SideBar selectedComponentId={null} tree={tree} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

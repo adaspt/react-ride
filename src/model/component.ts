@@ -1,6 +1,22 @@
-export type ComponentWidth = 1 | 2 | 3 | 4 | 5 | 6;
+export interface ComponentProperty {
+  name: string;
+  type: string;
+}
+
+export interface ComponentHook {
+  name: string;
+}
 
 export interface Component {
   id: string;
+  parentId: string | null;
   name: string;
+  width: number;
+  properties: ComponentProperty[];
+  hooks: ComponentHook[];
+}
+
+export interface ComponentTree {
+  components: Record<string, Component>;
+  byParent: Record<string, string[]>;
 }

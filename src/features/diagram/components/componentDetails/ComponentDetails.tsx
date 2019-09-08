@@ -1,38 +1,24 @@
 import React from 'react';
+
+import { Component } from '../../../../model/component';
 import Panel from '../../../../components/panel/Panel';
+import SizeInput from '../../../../components/sizeInput/SizeInput';
 
-interface Props {}
+interface Props {
+  component: Component;
+}
 
-const ComponentDetails: React.FC<Props> = () => {
+const ComponentDetails: React.FC<Props> = ({ component }) => {
   return (
     <>
       <Panel>
         <div className="card-header">Component</div>
         <div className="card-body">
           <div className="form-group">
-            <input type="text" className="form-control" placeholder="Name" />
+            <input type="text" className="form-control" placeholder="Name" defaultValue={component.name} />
           </div>
           <div className="form-group">
-            <div className="btn-group btn-group-sm btn-group-toggle w-100">
-              <label className="btn btn-secondary active">
-                <input type="radio" autoComplete="off" defaultChecked /> 1/4
-              </label>
-              <label className="btn btn-secondary">
-                <input type="radio" autoComplete="off" /> 1/3
-              </label>
-              <label className="btn btn-secondary">
-                <input type="radio" autoComplete="off" /> 1/2
-              </label>
-              <label className="btn btn-secondary">
-                <input type="radio" autoComplete="off" /> 2/3
-              </label>
-              <label className="btn btn-secondary">
-                <input type="radio" autoComplete="off" /> 3/4
-              </label>
-              <label className="btn btn-secondary">
-                <input type="radio" autoComplete="off" /> Full
-              </label>
-            </div>
+            <SizeInput value={component.width} onChange={() => {}} />
           </div>
           <div className="btn-toolbar">
             <button type="button" className="btn btn-secondary dropdown-toggle mr-2">
@@ -48,10 +34,14 @@ const ComponentDetails: React.FC<Props> = () => {
         <div className="card-header">
           <ul className="nav nav-tabs card-header-tabs">
             <li className="nav-item">
-              <a className="nav-link active">Props</a>
+              <a className="nav-link active" href="#props">
+                Props
+              </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link">Hooks</a>
+              <a className="nav-link" href="#hooks">
+                Hooks
+              </a>
             </li>
           </ul>
         </div>
