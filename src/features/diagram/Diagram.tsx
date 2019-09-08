@@ -3,6 +3,7 @@ import React from 'react';
 import { Component as ComponentModel } from '../../model/component';
 import { useComponentModel } from './hooks/useComponentModel';
 import { useSelection } from './hooks/useSelection';
+import Path from './components/Path';
 import Component from './components/Component';
 import SideBar from './components/SideBar';
 
@@ -58,14 +59,7 @@ const Diagram: React.FC = () => {
     <div className="row no-gutters flex-fill">
       <div className="col-9">
         <div className="absolute-fill overflow-auto small" onClick={() => selectComponent(null)}>
-          <nav className="ml-3 mt-3 mr-3">
-            <ol className="breadcrumb mb-0 py-2">
-              <li className="breadcrumb-item">Home</li>
-              <li className="breadcrumb-item">App</li>
-              <li className="breadcrumb-item">Layout</li>
-              <li className="breadcrumb-item active">Menu</li>
-            </ol>
-          </nav>
+          <Path selectedComponentId={selection.componentId} tree={tree} />
           <div className="row no-gutters p-2">
             <Component
               id="root"
