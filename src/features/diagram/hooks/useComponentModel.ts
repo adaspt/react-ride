@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import omit from 'ramda/es/omit';
+import remove from 'ramda/es/remove';
+import update from 'ramda/es/update';
 import without from 'ramda/es/without';
 
-import { ComponentTree, Component } from '../../../model/component';
+import { ComponentTree, Component, ComponentProperty } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
 
 interface State {
@@ -101,6 +103,40 @@ const handleUpdateComponent = (componentId: string, data: Partial<Component>) =>
   }
 });
 
+const handleUpdateProp = (componentId: string, propIndex: number, data: Partial<ComponentProperty>) => (
+  state: State
+): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        properties: update(
+          propIndex,
+          { ...state.tree.components[componentId].properties[propIndex], ...data },
+          state.tree.components[componentId].properties
+        )
+      }
+    }
+  }
+});
+
+const handleDeleteProp = (componentId: string, propIndex: number) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        properties: remove(propIndex, 1, state.tree.components[componentId].properties)
+      }
+    }
+  }
+});
+
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
 
@@ -120,6 +156,12 @@ export const useComponentModel = () => {
     return state.tree.components[componentId].properties.length;
   };
 
+  const updateProp = (componentId: string, propIndex: number, data: Partial<ComponentProperty>) =>
+    setState(handleUpdateProp(componentId, propIndex, data));
+
+  const deleteProp = (componentId: string, propIndex: number) =>
+    setState(handleDeleteProp(componentId, propIndex));
+
   const addHook = (componentId: string) => {
     setState(handleAddHook(componentId));
     return state.tree.components[componentId].hooks.length;
@@ -131,6 +173,8 @@ export const useComponentModel = () => {
     deleteComponent,
     updateComponent,
     addProp,
+    updateProp,
+    deleteProp,
     addHook
   };
 };

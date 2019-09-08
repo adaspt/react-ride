@@ -7,7 +7,16 @@ import Component from './components/Component';
 import SideBar from './components/SideBar';
 
 const Diagram: React.FC = () => {
-  const { tree, addComponent, deleteComponent, updateComponent, addProp, addHook } = useComponentModel();
+  const {
+    tree,
+    addComponent,
+    deleteComponent,
+    updateComponent,
+    addProp,
+    updateProp,
+    deleteProp,
+    addHook
+  } = useComponentModel();
   const { selection, selectComponent, selectProp, selectHook } = useSelection();
 
   const handleAddComponent = (parentId: string) => {
@@ -26,6 +35,11 @@ const Diagram: React.FC = () => {
   const handleAddProp = (componentId: string) => {
     const propIndex = addProp(componentId);
     selectProp(componentId, propIndex);
+  };
+
+  const handleDeleteProp = (componentId: string, propIndex: number) => {
+    deleteProp(componentId, propIndex);
+    selectProp(componentId, null);
   };
 
   const handleAddHook = (componentId: string) => {
@@ -66,6 +80,8 @@ const Diagram: React.FC = () => {
           onUpdateComponent={handleUpdateComponent}
           onAddProp={handleAddProp}
           onSelectProp={selectProp}
+          onUpdateProp={updateProp}
+          onDeleteProp={handleDeleteProp}
           onAddHook={handleAddHook}
           onSelectHook={selectHook}
         />
