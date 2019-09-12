@@ -13,6 +13,7 @@ import {
   loadComponentTree
 } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
+import { swap, insert } from '../../../utils/arrays';
 import { useDebouncedEffect } from '../../../hooks/useDebouncedEffect';
 
 interface State {
@@ -70,6 +71,17 @@ const handleDeleteComponent = (componentId: string) => (state: State): State => 
   };
 };
 
+const handleUpdateComponent = (componentId: string, data: Partial<Component>) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: { ...state.tree.components[componentId], ...data }
+    }
+  }
+});
+
 const handleAddProp = (componentId: string) => (state: State): State => ({
   ...state,
   tree: {
@@ -84,30 +96,122 @@ const handleAddProp = (componentId: string) => (state: State): State => ({
   }
 });
 
-const handleAddHook = (componentId: string) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        hooks: [...state.tree.components[componentId].hooks, { name: 'useHook' }]
+const handleMoveOutComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
+  }
+
+  const nextParentId = state.tree.components[prevParentId].parentId;
+  if (!nextParentId) {
+    return state;
+  }
+
+  const siblings = state.tree.byParent[nextParentId];
+  const parentIndex = siblings.indexOf(prevParentId);
+
+  return {
+    ...state,
+    tree: {
+      ...state.tree,
+      components: {
+        ...state.tree.components,
+        [componentId]: {
+          ...state.tree.components[componentId],
+          parentId: nextParentId
+        }
+      },
+      byParent: {
+        ...state.tree.byParent,
+        [prevParentId]: without([componentId], state.tree.byParent[prevParentId]),
+        [nextParentId]: insert(parentIndex + 1, componentId, state.tree.byParent[nextParentId])
       }
     }
-  }
-});
+  };
+};
 
-const handleUpdateComponent = (componentId: string, data: Partial<Component>) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: { ...state.tree.components[componentId], ...data }
-    }
+const handleMoveInComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
   }
-});
+
+  const siblings = state.tree.byParent[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return state;
+  }
+
+  const nextParentId = siblings[prevIndex - 1];
+
+  return {
+    ...state,
+    tree: {
+      ...state.tree,
+      components: {
+        ...state.tree.components,
+        [componentId]: { ...state.tree.components[componentId], parentId: nextParentId }
+      },
+      byParent: {
+        ...state.tree.byParent,
+        [prevParentId]: without([componentId], state.tree.byParent[prevParentId]),
+        [nextParentId]: [...state.tree.byParent[nextParentId], componentId]
+      }
+    }
+  };
+};
+
+const handleMoveUpComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
+  }
+
+  const siblings = state.tree.byParent[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return state;
+  }
+
+  const nextIndex = prevIndex - 1;
+
+  return {
+    ...state,
+    tree: {
+      ...state.tree,
+      byParent: {
+        ...state.tree.byParent,
+        [prevParentId]: swap(prevIndex, nextIndex, state.tree.byParent[prevParentId])
+      }
+    }
+  };
+};
+
+const handleMoveDownComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
+  }
+
+  const siblings = state.tree.byParent[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === siblings.length - 1) {
+    return state;
+  }
+
+  const nextIndex = prevIndex + 1;
+
+  return {
+    ...state,
+    tree: {
+      ...state.tree,
+      byParent: {
+        ...state.tree.byParent,
+        [prevParentId]: swap(prevIndex, nextIndex, state.tree.byParent[prevParentId])
+      }
+    }
+  };
+};
 
 const handleUpdateProp = (componentId: string, propIndex: number, data: Partial<ComponentProperty>) => (
   state: State
@@ -138,6 +242,20 @@ const handleDeleteProp = (componentId: string, propIndex: number) => (state: Sta
       [componentId]: {
         ...state.tree.components[componentId],
         properties: remove(propIndex, 1, state.tree.components[componentId].properties)
+      }
+    }
+  }
+});
+
+const handleAddHook = (componentId: string) => (state: State): State => ({
+  ...state,
+  tree: {
+    ...state.tree,
+    components: {
+      ...state.tree.components,
+      [componentId]: {
+        ...state.tree.components[componentId],
+        hooks: [...state.tree.components[componentId].hooks, { name: 'useHook' }]
       }
     }
   }
@@ -207,6 +325,14 @@ export const useComponentModel = () => {
 
   const updateComponent = (id: string, data: Partial<Component>) => setState(handleUpdateComponent(id, data));
 
+  const moveOutComponent = (componentId: string) => setState(handleMoveOutComponent(componentId));
+
+  const moveInComponent = (componentId: string) => setState(handleMoveInComponent(componentId));
+
+  const moveUpComponent = (componentId: string) => setState(handleMoveUpComponent(componentId));
+
+  const moveDownComponent = (componentId: string) => setState(handleMoveDownComponent(componentId));
+
   const addProp = (componentId: string) => {
     setState(handleAddProp(componentId));
     return state.tree.components[componentId].properties.length;
@@ -234,6 +360,10 @@ export const useComponentModel = () => {
     addComponent,
     deleteComponent,
     updateComponent,
+    moveOutComponent,
+    moveInComponent,
+    moveUpComponent,
+    moveDownComponent,
     addProp,
     updateProp,
     deleteProp,

@@ -16,6 +16,10 @@ interface Props {
   onAddComponent: (parentId: string) => void;
   onDeleteComponent: (componentId: string) => void;
   onUpdateComponent: (componentId: string, data: Partial<Component>) => void;
+  onMoveOutComponent: (componentId: string) => void;
+  onMoveInComponent: (componentId: string) => void;
+  onMoveUpComponent: (componentId: string) => void;
+  onMoveDownComponent: (componentId: string) => void;
   onAddProp: (componentId: string) => void;
   onSelectProp: (componentId: string, propIndex: number) => void;
   onAddHook: (componentId: string) => void;
@@ -29,6 +33,10 @@ const ComponentDetails: React.FC<Props> = ({
   onAddComponent,
   onDeleteComponent,
   onUpdateComponent,
+  onMoveOutComponent,
+  onMoveInComponent,
+  onMoveUpComponent,
+  onMoveDownComponent,
   onAddProp,
   onSelectProp,
   onAddHook,
@@ -83,7 +91,7 @@ const ComponentDetails: React.FC<Props> = ({
           <div className="form-group">
             <SizeInput value={widthInput.value} onChange={handleWidthChange} />
           </div>
-          <div className="btn-toolbar">
+          <div className="form-group">
             <button
               type="button"
               className="btn btn-secondary mr-2"
@@ -104,6 +112,36 @@ const ComponentDetails: React.FC<Props> = ({
               onClick={() => onDeleteComponent(component.id)}
             >
               Delete
+            </button>
+          </div>
+          <div>
+            <button
+              type="button"
+              className="btn btn-secondary mr-2"
+              onClick={() => onMoveOutComponent(component.id)}
+            >
+              Out
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mr-2"
+              onClick={() => onMoveInComponent(component.id)}
+            >
+              In
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mr-2"
+              onClick={() => onMoveUpComponent(component.id)}
+            >
+              Up
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mr-2"
+              onClick={() => onMoveDownComponent(component.id)}
+            >
+              Down
             </button>
           </div>
         </div>

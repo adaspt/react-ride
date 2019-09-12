@@ -13,6 +13,10 @@ interface Props {
   onAddComponent: (parentId: string) => void;
   onDeleteComponent: (componentId: string) => void;
   onUpdateComponent: (componentId: string, data: Partial<Component>) => void;
+  onMoveOutComponent: (componentId: string) => void;
+  onMoveInComponent: (componentId: string) => void;
+  onMoveUpComponent: (componentId: string) => void;
+  onMoveDownComponent: (componentId: string) => void;
   onAddProp: (componentId: string) => void;
   onSelectProp: (componentId: string, propIndex: number | null) => void;
   onUpdateProp: (componentId: string, propIndex: number, data: Partial<ComponentProperty>) => void;
@@ -31,6 +35,10 @@ const SideBar: React.FC<Props> = ({
   onAddComponent,
   onDeleteComponent,
   onUpdateComponent,
+  onMoveOutComponent,
+  onMoveInComponent,
+  onMoveUpComponent,
+  onMoveDownComponent,
   onAddProp,
   onSelectProp,
   onUpdateProp,
@@ -55,6 +63,10 @@ const SideBar: React.FC<Props> = ({
           onAddComponent={onAddComponent}
           onDeleteComponent={onDeleteComponent}
           onUpdateComponent={onUpdateComponent}
+          onMoveOutComponent={onMoveOutComponent}
+          onMoveInComponent={onMoveInComponent}
+          onMoveUpComponent={onMoveUpComponent}
+          onMoveDownComponent={onMoveDownComponent}
           onAddProp={onAddProp}
           onSelectProp={onSelectProp}
           onAddHook={onAddHook}
