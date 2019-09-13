@@ -25,7 +25,7 @@ const initialState: State = {
     components: {
       root: { id: 'root', parentId: null, name: 'App', width: 12, properties: [], hooks: [] }
     },
-    byParent: {
+    children: {
       root: []
     }
   }
@@ -53,11 +53,11 @@ const updateComponent = (
   [componentId]: fn(components[componentId])
 });
 
-const updateByParent = (
-  fn: (byParent: Record<string, string[]>) => Record<string, string[]>
+const updateChildren = (
+  fn: (children: Record<string, string[]>) => Record<string, string[]>
 ): ((tree: ComponentTree) => ComponentTree) => tree => ({
   ...tree,
-  byParent: fn(tree.byParent)
+  children: fn(tree.children)
 });
 
 const handleAddComponent = (parentId: string, id: string) =>
@@ -65,10 +65,10 @@ const handleAddComponent = (parentId: string, id: string) =>
     updateComponents(
       updateComponent(id, () => ({ id, parentId, name: 'Component', width: 12, properties: [], hooks: [] }))
     ),
-    updateByParent(byParent => ({
-      ...byParent,
+    updateChildren(children => ({
+      ...children,
       [id]: [],
-      [parentId]: [...byParent[parentId], id]
+      [parentId]: [...children[parentId], id]
     }))
   );
 
@@ -78,16 +78,16 @@ const handleDeleteComponent = (componentId: string) => (state: State): State => 
   const componentIdsToRemove: string[] = [];
   const collectComponentsToRemove = (id: string) => {
     componentIdsToRemove.push(id);
-    state.tree.byParent[id].forEach(collectComponentsToRemove);
+    state.tree.children[id].forEach(collectComponentsToRemove);
   };
 
   collectComponentsToRemove(componentId);
 
   return updateTreeAll(
     updateComponents(components => omit(componentIdsToRemove, components)),
-    updateByParent(byParent => ({
-      ...omit(componentIdsToRemove, byParent),
-      [parentId]: without([componentId], byParent[parentId])
+    updateChildren(children => ({
+      ...omit(componentIdsToRemove, children),
+      [parentId]: without([componentId], children[parentId])
     }))
   )(state);
 };
@@ -106,15 +106,15 @@ const handleMoveOutComponent = (componentId: string) => (state: State): State =>
     return state;
   }
 
-  const siblings = state.tree.byParent[nextParentId];
+  const siblings = state.tree.children[nextParentId];
   const parentIndex = siblings.indexOf(prevParentId);
 
   return updateTreeAll(
     updateComponents(updateComponent(componentId, component => ({ ...component, parentId: nextParentId }))),
-    updateByParent(byParent => ({
-      ...byParent,
-      [prevParentId]: without([componentId], byParent[prevParentId]),
-      [nextParentId]: insert(parentIndex + 1, componentId, byParent[nextParentId])
+    updateChildren(children => ({
+      ...children,
+      [prevParentId]: without([componentId], children[prevParentId]),
+      [nextParentId]: insert(parentIndex + 1, componentId, children[nextParentId])
     }))
   )(state);
 };
@@ -125,7 +125,7 @@ const handleMoveInComponent = (componentId: string) => (state: State): State => 
     return state;
   }
 
-  const siblings = state.tree.byParent[prevParentId];
+  const siblings = state.tree.children[prevParentId];
   const prevIndex = siblings.indexOf(componentId);
   if (prevIndex === 0) {
     return state;
@@ -135,10 +135,10 @@ const handleMoveInComponent = (componentId: string) => (state: State): State => 
 
   return updateTreeAll(
     updateComponents(updateComponent(componentId, component => ({ ...component, parentId: nextParentId }))),
-    updateByParent(byParent => ({
-      ...byParent,
-      [prevParentId]: without([componentId], byParent[prevParentId]),
-      [nextParentId]: [...byParent[nextParentId], componentId]
+    updateChildren(children => ({
+      ...children,
+      [prevParentId]: without([componentId], children[prevParentId]),
+      [nextParentId]: [...children[nextParentId], componentId]
     }))
   )(state);
 };
@@ -149,7 +149,7 @@ const handleMoveUpComponent = (componentId: string) => (state: State): State => 
     return state;
   }
 
-  const siblings = state.tree.byParent[prevParentId];
+  const siblings = state.tree.children[prevParentId];
   const prevIndex = siblings.indexOf(componentId);
   if (prevIndex === 0) {
     return state;
@@ -158,9 +158,9 @@ const handleMoveUpComponent = (componentId: string) => (state: State): State => 
   const nextIndex = prevIndex - 1;
 
   return updateTreeAll(
-    updateByParent(byParent => ({
-      ...byParent,
-      [prevParentId]: swap(prevIndex, nextIndex, byParent[prevParentId])
+    updateChildren(children => ({
+      ...children,
+      [prevParentId]: swap(prevIndex, nextIndex, children[prevParentId])
     }))
   )(state);
 };
@@ -171,7 +171,7 @@ const handleMoveDownComponent = (componentId: string) => (state: State): State =
     return state;
   }
 
-  const siblings = state.tree.byParent[prevParentId];
+  const siblings = state.tree.children[prevParentId];
   const prevIndex = siblings.indexOf(componentId);
   if (prevIndex === siblings.length - 1) {
     return state;
@@ -180,9 +180,9 @@ const handleMoveDownComponent = (componentId: string) => (state: State): State =
   const nextIndex = prevIndex + 1;
 
   return updateTreeAll(
-    updateByParent(byParent => ({
-      ...byParent,
-      [prevParentId]: swap(prevIndex, nextIndex, byParent[prevParentId])
+    updateChildren(children => ({
+      ...children,
+      [prevParentId]: swap(prevIndex, nextIndex, children[prevParentId])
     }))
   )(state);
 };

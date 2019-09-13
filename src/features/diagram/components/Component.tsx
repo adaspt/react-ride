@@ -12,7 +12,7 @@ interface Props {
 
 const Component: React.FC<Props> = ({ id, selectedComponentId, tree, onSelect }) => {
   const { name, width, properties, hooks } = tree.components[id];
-  const children = tree.byParent[id];
+  const children = tree.children[id];
   const selected = selectedComponentId === id;
 
   const handleSelect: React.MouseEventHandler = e => {

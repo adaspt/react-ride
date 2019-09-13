@@ -18,7 +18,7 @@ export interface Component {
 
 export interface ComponentTree {
   components: Record<string, Component>;
-  byParent: Record<string, string[]>;
+  children: Record<string, string[]>;
 }
 
 export const saveComponentTree = (tree: ComponentTree) => {
@@ -33,26 +33,24 @@ export const loadComponentTree = (): ComponentTree | null => {
   }
 
   const components: Record<string, Component> = JSON.parse(data);
-  const byParent = Object.keys(components)
-    .map(id => components[id])
-    .reduce<Record<string, string[]>>((map, x) => {
-      if (!map[x.id]) {
-        map[x.id] = [];
+  const children = Object.values(components).reduce<ComponentTree['children']>((map, x) => {
+    if (!map[x.id]) {
+      map[x.id] = [];
+    }
+
+    if (x.parentId) {
+      if (!map[x.parentId]) {
+        map[x.parentId] = [];
       }
 
-      if (x.parentId) {
-        if (!map[x.parentId]) {
-          map[x.parentId] = [];
-        }
+      map[x.parentId].push(x.id);
+    }
 
-        map[x.parentId].push(x.id);
-      }
-
-      return map;
-    }, {});
+    return map;
+  }, {});
 
   return {
     components,
-    byParent
+    children
   };
 };
