@@ -32,7 +32,7 @@ export const loadComponentTree = (): ComponentTree | null => {
     return null;
   }
 
-  const components: Record<string, Component> = JSON.parse(data);
+  const components: ComponentTree['components'] = JSON.parse(data);
   const children = Object.values(components).reduce<ComponentTree['children']>((map, x) => {
     if (!map[x.id]) {
       map[x.id] = [];
