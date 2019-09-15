@@ -13,6 +13,10 @@ const Diagram: React.FC = () => {
     addComponent,
     deleteComponent,
     updateComponent,
+    moveOutComponent,
+    moveInComponent,
+    moveUpComponent,
+    moveDownComponent,
     addProp,
     updateProp,
     deleteProp,
@@ -79,6 +83,10 @@ const Diagram: React.FC = () => {
           onAddComponent={handleAddComponent}
           onDeleteComponent={handleDeleteComponent}
           onUpdateComponent={handleUpdateComponent}
+          onMoveOutComponent={moveOutComponent}
+          onMoveInComponent={moveInComponent}
+          onMoveUpComponent={moveUpComponent}
+          onMoveDownComponent={moveDownComponent}
           onAddProp={handleAddProp}
           onSelectProp={selectProp}
           onUpdateProp={updateProp}

@@ -1,8 +1,4 @@
 import { useState, useEffect } from 'react';
-import omit from 'ramda/es/omit';
-import remove from 'ramda/es/remove';
-import update from 'ramda/es/update';
-import without from 'ramda/es/without';
 
 import {
   ComponentTree,
@@ -12,39 +8,52 @@ import {
   saveComponentTree,
   loadComponentTree
 } from '../../../model/component';
+import { adjust, append, insert, remove, swap, without } from '../../../utils/arrays';
+import { pipe } from '../../../utils/functions';
 import { uniqueId } from '../../../utils/strings';
+import { Mod, mod, mergeLeft, omit, set } from '../../../utils/objects';
 import { useDebouncedEffect } from '../../../hooks/useDebouncedEffect';
 
 interface State {
   tree: ComponentTree;
 }
 
+const createComponent = (id: string, parentId: string | null, name: string): Component => ({
+  id,
+  parentId,
+  name,
+  width: 12,
+  properties: [],
+  hooks: []
+});
+
 const initialState: State = {
   tree: {
     components: {
-      root: { id: 'root', parentId: null, name: 'App', width: 12, properties: [], hooks: [] }
+      root: createComponent(uniqueId(), null, 'App')
     },
-    byParent: {
+    children: {
       root: []
     }
   }
 };
 
-const handleAddComponent = (parentId: string, id: string) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [id]: { id, parentId, name: 'Component', width: 12, properties: [], hooks: [] }
-    },
-    byParent: {
-      ...state.tree.byParent,
-      [id]: [],
-      [parentId]: [...state.tree.byParent[parentId], id]
-    }
-  }
-});
+const updateTree = mod('tree') as Mod<State, ComponentTree>;
+const updateComponents = mod('components');
+const updateChildren = mod('children');
+
+const handleAddComponent = (parentId: string, id: string) =>
+  updateTree(
+    pipe(
+      updateComponents(set(id, createComponent(id, parentId, 'Component'))),
+      updateChildren(
+        pipe(
+          set(id, [] as string[]),
+          mod(parentId, append(id))
+        )
+      )
+    )
+  );
 
 const handleDeleteComponent = (componentId: string) => (state: State): State => {
   const parentId = state.tree.components[componentId].parentId!;
@@ -52,130 +61,132 @@ const handleDeleteComponent = (componentId: string) => (state: State): State => 
   const componentIdsToRemove: string[] = [];
   const collectComponentsToRemove = (id: string) => {
     componentIdsToRemove.push(id);
-    state.tree.byParent[id].forEach(collectComponentsToRemove);
+    state.tree.children[id].forEach(collectComponentsToRemove);
   };
 
   collectComponentsToRemove(componentId);
 
-  return {
-    ...state,
-    tree: {
-      ...state.tree,
-      components: omit(componentIdsToRemove, state.tree.components),
-      byParent: {
-        ...omit(componentIdsToRemove, state.tree.byParent),
-        [parentId]: without([componentId], state.tree.byParent[parentId])
-      }
-    }
-  };
+  return updateTree(
+    pipe(
+      updateComponents(omit(componentIdsToRemove)),
+      updateChildren(
+        pipe(
+          omit(componentIdsToRemove),
+          mod(parentId, without([componentId]))
+        )
+      )
+    )
+  )(state);
 };
 
-const handleAddProp = (componentId: string) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        properties: [...state.tree.components[componentId].properties, { name: 'prop', type: 'string' }]
-      }
-    }
-  }
-});
+const handleUpdateComponent = (componentId: string, data: Partial<Component>) =>
+  updateTree(updateComponents(mod(componentId, mergeLeft(data))));
 
-const handleAddHook = (componentId: string) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        hooks: [...state.tree.components[componentId].hooks, { name: 'useHook' }]
-      }
-    }
+const handleMoveOutComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
   }
-});
 
-const handleUpdateComponent = (componentId: string, data: Partial<Component>) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: { ...state.tree.components[componentId], ...data }
-    }
+  const nextParentId = state.tree.components[prevParentId].parentId;
+  if (!nextParentId) {
+    return state;
   }
-});
 
-const handleUpdateProp = (componentId: string, propIndex: number, data: Partial<ComponentProperty>) => (
-  state: State
-): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        properties: update(
-          propIndex,
-          { ...state.tree.components[componentId].properties[propIndex], ...data },
-          state.tree.components[componentId].properties
+  const siblings = state.tree.children[nextParentId];
+  const parentIndex = siblings.indexOf(prevParentId);
+
+  return updateTree(
+    pipe(
+      updateComponents(mod(componentId, set('parentId', nextParentId as string | null))),
+      updateChildren(
+        pipe(
+          mod(prevParentId, without([componentId])),
+          mod(nextParentId, insert(parentIndex + 1, componentId))
         )
-      }
-    }
-  }
-});
+      )
+    )
+  )(state);
+};
 
-const handleDeleteProp = (componentId: string, propIndex: number) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        properties: remove(propIndex, 1, state.tree.components[componentId].properties)
-      }
-    }
+const handleMoveInComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
   }
-});
 
-const handleUpdateHook = (componentId: string, hookIndex: number, data: Partial<ComponentHook>) => (
-  state: State
-): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        hooks: update(
-          hookIndex,
-          { ...state.tree.components[componentId].hooks[hookIndex], ...data },
-          state.tree.components[componentId].hooks
+  const siblings = state.tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return state;
+  }
+
+  const nextParentId = siblings[prevIndex - 1];
+
+  return updateTree(
+    pipe(
+      updateComponents(mod(componentId, set('parentId', nextParentId as string | null))),
+      updateChildren(
+        pipe(
+          mod(prevParentId, without([componentId])),
+          mod(nextParentId, append(componentId))
         )
-      }
-    }
-  }
-});
+      )
+    )
+  )(state);
+};
 
-const handleDeleteHook = (componentId: string, hookIndex: number) => (state: State): State => ({
-  ...state,
-  tree: {
-    ...state.tree,
-    components: {
-      ...state.tree.components,
-      [componentId]: {
-        ...state.tree.components[componentId],
-        hooks: remove(hookIndex, 1, state.tree.components[componentId].hooks)
-      }
-    }
+const handleMoveUpComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
   }
-});
+
+  const siblings = state.tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return state;
+  }
+
+  const nextIndex = prevIndex - 1;
+
+  return updateTree(updateChildren(mod(prevParentId, swap(prevIndex, nextIndex))))(state);
+};
+
+const handleMoveDownComponent = (componentId: string) => (state: State): State => {
+  const prevParentId = state.tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return state;
+  }
+
+  const siblings = state.tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === siblings.length - 1) {
+    return state;
+  }
+
+  const nextIndex = prevIndex + 1;
+
+  return updateTree(updateChildren(mod(prevParentId, swap(prevIndex, nextIndex))))(state);
+};
+
+const handleAddProp = (componentId: string) =>
+  updateTree(updateComponents(mod(componentId, mod('properties', append({ name: 'prop', type: 'string' })))));
+
+const handleUpdateProp = (componentId: string, propIndex: number, data: Partial<ComponentProperty>) =>
+  updateTree(updateComponents(mod(componentId, mod('properties', adjust(propIndex, mergeLeft(data))))));
+
+const handleDeleteProp = (componentId: string, propIndex: number) =>
+  updateTree(updateComponents(mod(componentId, mod('properties', remove<ComponentProperty>(propIndex, 1)))));
+
+const handleAddHook = (componentId: string) =>
+  updateTree(updateComponents(mod(componentId, mod('hooks', append({ name: 'useHook' })))));
+
+const handleUpdateHook = (componentId: string, hookIndex: number, data: Partial<ComponentHook>) =>
+  updateTree(updateComponents(mod(componentId, mod('hooks', adjust(hookIndex, mergeLeft(data))))));
+
+const handleDeleteHook = (componentId: string, hookIndex: number) =>
+  updateTree(updateComponents(mod(componentId, mod('hooks', remove<ComponentHook>(hookIndex, 1)))));
 
 export const useComponentModel = () => {
   const [state, setState] = useState(initialState);
@@ -207,6 +218,14 @@ export const useComponentModel = () => {
 
   const updateComponent = (id: string, data: Partial<Component>) => setState(handleUpdateComponent(id, data));
 
+  const moveOutComponent = (componentId: string) => setState(handleMoveOutComponent(componentId));
+
+  const moveInComponent = (componentId: string) => setState(handleMoveInComponent(componentId));
+
+  const moveUpComponent = (componentId: string) => setState(handleMoveUpComponent(componentId));
+
+  const moveDownComponent = (componentId: string) => setState(handleMoveDownComponent(componentId));
+
   const addProp = (componentId: string) => {
     setState(handleAddProp(componentId));
     return state.tree.components[componentId].properties.length;
@@ -234,6 +253,10 @@ export const useComponentModel = () => {
     addComponent,
     deleteComponent,
     updateComponent,
+    moveOutComponent,
+    moveInComponent,
+    moveUpComponent,
+    moveDownComponent,
     addProp,
     updateProp,
     deleteProp,
