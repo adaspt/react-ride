@@ -62,7 +62,7 @@ const Diagram: React.FC = () => {
   return (
     <div className="row no-gutters flex-fill">
       <div className="col-9">
-        <div className="absolute-fill overflow-auto small" onClick={() => selectComponent(null)}>
+        <div className="absolute-fill overflow-auto" onClick={() => selectComponent(null)}>
           <Path selectedComponentId={selection.componentId} tree={tree} />
           <div className="row no-gutters p-2">
             <Component
