@@ -76,7 +76,9 @@ const ComponentDetails: React.FC<Props> = ({
   return (
     <>
       <Panel>
-        <div className="card-header">Component</div>
+        <div className="card-header">
+          <i className="fa fa-cube"></i> Component
+        </div>
         <div className="card-body">
           <div className="form-group">
             <input
@@ -91,58 +93,66 @@ const ComponentDetails: React.FC<Props> = ({
           <div className="form-group">
             <SizeInput value={widthInput.value} onChange={handleWidthChange} />
           </div>
-          <div className="form-group">
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
-              onClick={() => onAddComponent(component.id)}
-            >
-              +Comp
-            </button>
-            <button type="button" className="btn btn-secondary mr-2" onClick={handleAddProp}>
-              +Prop
-            </button>
-            <button type="button" className="btn btn-secondary mr-2" onClick={handleAddHook}>
-              +Hook
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              disabled={!component.parentId}
-              onClick={() => onDeleteComponent(component.id)}
-            >
-              Delete
-            </button>
-          </div>
-          <div>
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
-              onClick={() => onMoveOutComponent(component.id)}
-            >
-              Out
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
-              onClick={() => onMoveInComponent(component.id)}
-            >
-              In
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
-              onClick={() => onMoveUpComponent(component.id)}
-            >
-              Up
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
-              onClick={() => onMoveDownComponent(component.id)}
-            >
-              Down
-            </button>
+          <div className="btn-toolbar">
+            <div className="form-group btn-group mr-2">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => onAddComponent(component.id)}
+              >
+                <i className="fa fa-plus"></i> Comp
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={handleAddProp}>
+                <i className="fa fa-plus"></i> Prop
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={handleAddHook}>
+                <i className="fa fa-plus"></i> Hook
+              </button>
+            </div>
+            <div className="form-group btn-group mr-2">
+              <button
+                type="button"
+                className="btn btn-danger"
+                disabled={!component.parentId}
+                onClick={() => onDeleteComponent(component.id)}
+              >
+                <i className="fa fa-trash"></i>
+              </button>
+            </div>
+            <div className="form-group btn-group">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                title="In"
+                onClick={() => onMoveInComponent(component.id)}
+              >
+                <i className="fa fa-arrow-circle-up"></i>
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                title="Out"
+                onClick={() => onMoveOutComponent(component.id)}
+              >
+                <i className="fa fa-arrow-circle-down"></i>
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                title="Up"
+                onClick={() => onMoveUpComponent(component.id)}
+              >
+                <i className="fa fa-arrow-up"></i>
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                title="Down"
+                onClick={() => onMoveDownComponent(component.id)}
+              >
+                <i className="fa fa-arrow-down"></i>
+              </button>
+            </div>
           </div>
         </div>
       </Panel>
