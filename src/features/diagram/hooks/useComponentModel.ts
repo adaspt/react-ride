@@ -30,7 +30,7 @@ const createComponent = (id: string, parentId: string | null, name: string): Com
 const initialState: State = {
   tree: {
     components: {
-      root: createComponent(uniqueId(), null, 'App')
+      root: createComponent('root', null, 'App')
     },
     children: {
       root: []
