@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Home from './features/home/Home';
 import Sandbox from './features/sandbox/Sandbox';
 import SignIn from './features/signin/SignIn';
+import DiagramList from './features/diagramList/DiagramList';
 
 const App: React.FC = () => {
   const { authenticating, authError, user, signOut } = useSession();
@@ -28,6 +29,7 @@ const App: React.FC = () => {
       <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
         <Home path="/" />
+        <DiagramList path="/diagram" user={user} />
         <Sandbox path="/sandbox" />
         <SignIn path="/signin" authenticated={authenticated} />
       </Router>
