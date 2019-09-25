@@ -19,6 +19,13 @@ const Navbar: React.FC = () => {
           </Link>
         </li>
       </ul>
+      <ul className="navbar-nav">
+        <li className="nav-item">
+          <Link to="/signin" getProps={getNavLinkProps}>
+            Sign in
+          </Link>
+        </li>
+      </ul>
     </nav>
   );
 };
