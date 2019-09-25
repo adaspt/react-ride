@@ -16,9 +16,9 @@ const SignIn: React.FC<Props> = ({ authenticated }) => {
   };
 
   return (
-    <div>
-      <button type="button" onClick={handleSignInWithGoogle}>
-        Sign in with Google
+    <div className="mx-auto my-auto">
+      <button type="button" className="btn btn-danger btn-lg" onClick={handleSignInWithGoogle}>
+        <i className="fa fa-google mr-2" /> Sign in with Google
       </button>
     </div>
   );
