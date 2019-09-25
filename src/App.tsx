@@ -5,8 +5,14 @@ import Navbar from './components/Navbar';
 import Home from './features/home/Home';
 import Sandbox from './features/sandbox/Sandbox';
 import SignIn from './features/signin/SignIn';
+import { useSession } from './hooks/useSession';
 
 const App: React.FC = () => {
+  const { authenticating } = useSession();
+  if (authenticating) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <React.StrictMode>
       <Navbar />

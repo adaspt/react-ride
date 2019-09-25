@@ -3,7 +3,7 @@ import { RouteComponentProps } from '@reach/router';
 
 interface Props extends RouteComponentProps {}
 
-const SignIn: React.FC<Props> = ({}) => {
+const SignIn: React.FC<Props> = () => {
   return <>SignIn</>;
 };
 
