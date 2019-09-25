@@ -1,13 +1,19 @@
 import React from 'react';
+import { Router } from '@reach/router';
+
 import Navbar from './components/Navbar';
-import Diagram from './features/diagram/Diagram';
+import Home from './features/home/Home';
+import Demo from './features/demo/Demo';
 
 const App: React.FC = () => {
   return (
-    <>
+    <React.StrictMode>
       <Navbar />
-      <Diagram />
-    </>
+      <Router className="d-flex flex-fill">
+        <Home path="/" />
+        <Demo path="/demo" />
+      </Router>
+    </React.StrictMode>
   );
 };
 

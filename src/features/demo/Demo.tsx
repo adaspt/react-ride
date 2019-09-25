@@ -1,4 +1,5 @@
 import React from 'react';
+import { RouteComponentProps } from '@reach/router';
 
 import { Component as ComponentModel } from '../../model/component';
 import { useComponentModel } from './hooks/useComponentModel';
@@ -7,7 +8,9 @@ import Path from './components/Path';
 import Component from './components/Component';
 import SideBar from './components/SideBar';
 
-const Diagram: React.FC = () => {
+interface Props extends RouteComponentProps {}
+
+const Demo: React.FC<Props> = () => {
   const {
     tree,
     addComponent,
@@ -101,4 +104,4 @@ const Diagram: React.FC = () => {
   );
 };
 
-export default Diagram;
+export default Demo;

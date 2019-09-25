@@ -1,11 +1,24 @@
 import React from 'react';
+import clsx from 'clsx';
+import { Link, LinkGetProps } from '@reach/router';
+
+const getNavLinkProps = ({ isCurrent }: LinkGetProps) => ({
+  className: clsx('nav-link', isCurrent && 'active')
+});
 
 const Navbar: React.FC = () => {
   return (
     <nav className="navbar navbar-light bg-light border-bottom">
-      <span className="navbar-brand mb-0 h1">
+      <Link to="/" className="navbar-brand mb-0 h1">
         <i className="fa fa-cubes"></i> React Ride
-      </span>
+      </Link>
+      <ul className="navbar-nav mr-auto">
+        <li className="nav-item">
+          <Link to="/demo" getProps={getNavLinkProps}>
+            Demo
+          </Link>
+        </li>
+      </ul>
     </nav>
   );
 };
