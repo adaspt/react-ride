@@ -1,14 +1,14 @@
 import React from 'react';
 import { Router } from '@reach/router';
 
+import { useSession } from './hooks/useSession';
 import Navbar from './components/Navbar';
 import Home from './features/home/Home';
 import Sandbox from './features/sandbox/Sandbox';
 import SignIn from './features/signin/SignIn';
-import { useSession } from './hooks/useSession';
 
 const App: React.FC = () => {
-  const { authenticating, authError } = useSession();
+  const { authenticating, authError, user, signOut } = useSession();
   if (authError) {
     return (
       <p>
@@ -21,13 +21,15 @@ const App: React.FC = () => {
     return <p>Loading...</p>;
   }
 
+  const authenticated = !!user;
+
   return (
     <React.StrictMode>
-      <Navbar />
+      <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
         <Home path="/" />
         <Sandbox path="/sandbox" />
-        <SignIn path="/signin" />
+        <SignIn path="/signin" authenticated={authenticated} />
       </Router>
     </React.StrictMode>
   );
