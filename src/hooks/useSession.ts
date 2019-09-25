@@ -1,25 +1,26 @@
 import { useState, useEffect } from 'react';
 
-declare const firebase: any;
-
 interface State {
   authenticating: boolean;
-  user: {} | null;
+  authError: firebase.auth.Error | null;
+  user: firebase.User | null;
 }
 
 const initialState: State = {
   authenticating: true,
+  authError: null,
   user: null
 };
 
 export const useSession = () => {
   const [state, setState] = useState(initialState);
 
-  useEffect(() => {
-    return firebase.auth().onAuthStateChanged((user: any) => {
-      setState({ authenticating: false, user });
-    });
-  }, []);
+  const onAuthenticated = (user: firebase.User | null) =>
+    setState({ authenticating: false, authError: null, user });
+  const onError = (authError: firebase.auth.Error) =>
+    setState({ authenticating: false, authError, user: null });
+
+  useEffect(() => firebase.auth().onAuthStateChanged(onAuthenticated, onError), []);
 
   return state;
 };

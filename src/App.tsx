@@ -8,7 +8,15 @@ import SignIn from './features/signin/SignIn';
 import { useSession } from './hooks/useSession';
 
 const App: React.FC = () => {
-  const { authenticating } = useSession();
+  const { authenticating, authError } = useSession();
+  if (authError) {
+    return (
+      <p>
+        {authError.code} {authError.message}
+      </p>
+    );
+  }
+
   if (authenticating) {
     return <p>Loading...</p>;
   }
