@@ -10,7 +10,7 @@ import SideBar from './components/SideBar';
 
 interface Props extends RouteComponentProps {}
 
-const Demo: React.FC<Props> = () => {
+const Sandbox: React.FC<Props> = () => {
   const {
     tree,
     addComponent,
@@ -104,4 +104,4 @@ const Demo: React.FC<Props> = () => {
   );
 };
 
-export default Demo;
+export default Sandbox;

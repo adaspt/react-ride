@@ -3,7 +3,7 @@ import { Router } from '@reach/router';
 
 import Navbar from './components/Navbar';
 import Home from './features/home/Home';
-import Demo from './features/demo/Demo';
+import Sandbox from './features/sandbox/Sandbox';
 import SignIn from './features/signin/SignIn';
 
 const App: React.FC = () => {
@@ -12,7 +12,7 @@ const App: React.FC = () => {
       <Navbar />
       <Router className="d-flex flex-fill">
         <Home path="/" />
-        <Demo path="/demo" />
+        <Sandbox path="/sandbox" />
         <SignIn path="/signin" />
       </Router>
     </React.StrictMode>

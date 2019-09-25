@@ -4,7 +4,7 @@ import { RouteComponentProps, Redirect } from '@reach/router';
 interface Props extends RouteComponentProps {}
 
 const Home: React.FC<Props> = () => {
-  return <Redirect to="demo" noThrow />;
+  return <Redirect to="sandbox" noThrow />;
 };
 
 export default Home;

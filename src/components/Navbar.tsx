@@ -14,8 +14,8 @@ const Navbar: React.FC = () => {
       </Link>
       <ul className="navbar-nav mr-auto">
         <li className="nav-item">
-          <Link to="/demo" getProps={getNavLinkProps}>
-            Demo
+          <Link to="/sandbox" getProps={getNavLinkProps}>
+            Sandbox
           </Link>
         </li>
       </ul>
