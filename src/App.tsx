@@ -3,9 +3,9 @@ import { Router } from '@reach/router';
 
 import { useSession } from './hooks/useSession';
 import Navbar from './components/Navbar';
-import Home from './features/home/Home';
-import Sandbox from './features/sandbox/Sandbox';
-import SignIn from './features/signin/SignIn';
+import HomePage from './features/home/HomePage';
+import SandboxPage from './features/sandbox/SandboxPage';
+import SignInPage from './features/signin/SignInPage';
 import DiagramListPage from './features/diagramList/DiagramListPage';
 import DiagramPage from './features/diagram/DiagramPage';
 
@@ -29,11 +29,11 @@ const App: React.FC = () => {
     <React.StrictMode>
       <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
-        <Home path="/" />
+        <HomePage path="/" user={user} />
         <DiagramListPage path="/diagram" user={user} />
         <DiagramPage path="/diagram/:id" user={user} />
-        <Sandbox path="/sandbox" />
-        <SignIn path="/signin" authenticated={authenticated} />
+        <SandboxPage path="/sandbox" />
+        <SignInPage path="/signin" authenticated={authenticated} />
       </Router>
     </React.StrictMode>
   );

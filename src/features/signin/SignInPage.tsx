@@ -5,7 +5,7 @@ interface Props extends RouteComponentProps {
   authenticated: boolean;
 }
 
-const SignIn: React.FC<Props> = ({ authenticated }) => {
+const SignInPage: React.FC<Props> = ({ authenticated }) => {
   if (authenticated) {
     return <Redirect to="/" noThrow />;
   }
@@ -24,4 +24,4 @@ const SignIn: React.FC<Props> = ({ authenticated }) => {
   );
 };
 
-export default SignIn;
+export default SignInPage;
