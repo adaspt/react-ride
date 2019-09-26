@@ -9,17 +9,22 @@ interface Props {
   onSignOut: () => void;
 }
 
-const getNavLinkProps = ({ isCurrent }: LinkGetProps) => ({
-  className: clsx('nav-link', isCurrent && 'active')
+const getNavLinkProps = ({ isPartiallyCurrent }: LinkGetProps) => ({
+  className: clsx('nav-link', isPartiallyCurrent && 'active')
 });
 
 const Navbar: React.FC<Props> = ({ user, onSignOut }) => {
   return (
-    <nav className="navbar navbar-light bg-light border-bottom">
+    <nav className="navbar navbar-expand navbar-light bg-light border-bottom">
       <Link to="/" className="navbar-brand mb-0 h1">
         <i className="fa fa-cubes"></i> React Ride
       </Link>
       <ul className="navbar-nav mr-auto">
+        <li className="nav-item">
+          <Link to="/diagram" getProps={getNavLinkProps}>
+            Diagrams
+          </Link>
+        </li>
         <li className="nav-item">
           <Link to="/sandbox" getProps={getNavLinkProps}>
             Sandbox

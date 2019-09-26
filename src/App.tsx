@@ -3,9 +3,12 @@ import { Router } from '@reach/router';
 
 import { useSession } from './hooks/useSession';
 import Navbar from './components/Navbar';
-import Home from './features/home/Home';
-import Sandbox from './features/sandbox/Sandbox';
-import SignIn from './features/signin/SignIn';
+import Route from './components/Route';
+import HomePage from './features/home/HomePage';
+import SandboxPage from './features/sandbox/SandboxPage';
+import SignInPage from './features/signin/SignInPage';
+import DiagramListPage from './features/diagramList/DiagramListPage';
+import DiagramPage from './features/diagram/DiagramPage';
 
 const App: React.FC = () => {
   const { authenticating, authError, user, signOut } = useSession();
@@ -27,9 +30,13 @@ const App: React.FC = () => {
     <React.StrictMode>
       <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
-        <Home path="/" />
-        <Sandbox path="/sandbox" />
-        <SignIn path="/signin" authenticated={authenticated} />
+        <HomePage path="/" user={user} />
+        <Route path="/diagram">
+          <DiagramListPage path="/" user={user} />
+          <DiagramPage path="/:id" user={user} />
+        </Route>
+        <SandboxPage path="/sandbox" />
+        <SignInPage path="/signin" authenticated={authenticated} />
       </Router>
     </React.StrictMode>
   );
