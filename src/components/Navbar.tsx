@@ -9,8 +9,8 @@ interface Props {
   onSignOut: () => void;
 }
 
-const getNavLinkProps = ({ isCurrent }: LinkGetProps) => ({
-  className: clsx('nav-link', isCurrent && 'active')
+const getNavLinkProps = ({ isPartiallyCurrent }: LinkGetProps) => ({
+  className: clsx('nav-link', isPartiallyCurrent && 'active')
 });
 
 const Navbar: React.FC<Props> = ({ user, onSignOut }) => {

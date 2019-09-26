@@ -3,6 +3,7 @@ import { Router } from '@reach/router';
 
 import { useSession } from './hooks/useSession';
 import Navbar from './components/Navbar';
+import Route from './components/Route';
 import HomePage from './features/home/HomePage';
 import SandboxPage from './features/sandbox/SandboxPage';
 import SignInPage from './features/signin/SignInPage';
@@ -30,8 +31,10 @@ const App: React.FC = () => {
       <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
         <HomePage path="/" user={user} />
-        <DiagramListPage path="/diagram" user={user} />
-        <DiagramPage path="/diagram/:id" user={user} />
+        <Route path="/diagram">
+          <DiagramListPage path="/" user={user} />
+          <DiagramPage path="/:id" user={user} />
+        </Route>
         <SandboxPage path="/sandbox" />
         <SignInPage path="/signin" authenticated={authenticated} />
       </Router>
