@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 
 import { User, mapFirebaseUserToUser } from '../model/auth';
+import { setUser } from '../api/users';
+import { useDatabase } from './useDatabase';
 
 interface State {
   authenticating: boolean;
@@ -15,34 +17,36 @@ const initialState: State = {
 };
 
 export const useSession = () => {
+  const db = useDatabase();
   const auth = useMemo(() => firebase.auth(), []);
   const [state, setState] = useState(initialState);
 
-  const onAuthenticated = async (firebaseUser: firebase.User | null) => {
-    if (!firebaseUser) {
-      setState({ authenticating: false, authError: null, user: null });
-      return;
-    }
+  useEffect(
+    () =>
+      auth.onAuthStateChanged(
+        async firebaseUser => {
+          if (!firebaseUser) {
+            setState({ authenticating: false, authError: null, user: null });
+            return;
+          }
 
-    try {
-      const user = mapFirebaseUserToUser(firebaseUser);
-      await firebase
-        .firestore()
-        .collection('users')
-        .doc(user.id)
-        .set({
-          displayName: user.displayName,
-          email: user.email
-        });
+          try {
+            const user = mapFirebaseUserToUser(firebaseUser);
+            await db.execute(setUser(user));
 
-      setState({ authenticating: false, authError: null, user });
-    } catch (error) {
-      setState({ authenticating: false, authError: '', user: null });
-    }
-  };
-
-  const onError = (error: firebase.auth.Error) =>
-    setState({ authenticating: false, authError: `${error.code}: ${error.message}`, user: null });
+            setState({ authenticating: false, authError: null, user });
+          } catch (error) {
+            setState({
+              authenticating: false,
+              authError: error.message || 'Failed to update user',
+              user: null
+            });
+          }
+        },
+        error => setState({ authenticating: false, authError: `${error.code}: ${error.message}`, user: null })
+      ),
+    [db, auth]
+  );
 
   const signIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -52,8 +56,6 @@ export const useSession = () => {
   const signOut = () => {
     auth.signOut().catch(error => console.error('Failed to sign out', error));
   };
-
-  useEffect(() => firebase.auth().onAuthStateChanged(onAuthenticated, onError), []);
 
   return {
     ...state,
