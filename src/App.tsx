@@ -11,7 +11,7 @@ import DiagramListPage from './features/diagramList/DiagramListPage';
 import DiagramPage from './features/diagram/DiagramPage';
 
 const App: React.FC = () => {
-  const { authenticating, authError, user, signOut } = useSession();
+  const { authenticating, authError, user, signIn, signOut } = useSession();
   if (authError) {
     return (
       <p>
@@ -36,7 +36,7 @@ const App: React.FC = () => {
           <DiagramPage path="/:id" user={user} />
         </Route>
         <SandboxPage path="/sandbox" />
-        <SignInPage path="/signin" authenticated={authenticated} />
+        <SignInPage path="/signin" authenticated={authenticated} onSignInWithGoogle={signIn} />
       </Router>
     </React.StrictMode>
   );

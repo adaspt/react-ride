@@ -1,9 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
-export interface User {
-  uid: string;
-  displayName: string;
-}
+import { User, mapFirebaseUserToUser } from '../model/auth';
 
 interface State {
   authenticating: boolean;
@@ -17,36 +14,32 @@ const initialState: State = {
   user: null
 };
 
-const mapFirebaseUserToUser = (user: firebase.User | null): User | null => {
-  if (user == null) {
-    return null;
-  }
-
-  return {
-    uid: user.uid,
-    displayName: user.displayName || user.email || 'Unknown'
-  };
-};
-
 export const useSession = () => {
+  const auth = useMemo(() => firebase.auth(), []);
   const [state, setState] = useState(initialState);
 
-  const onAuthenticated = (user: firebase.User | null) =>
-    setState({ authenticating: false, authError: null, user: mapFirebaseUserToUser(user) });
+  const onAuthenticated = (firebaseUser: firebase.User | null) => {
+    const user = mapFirebaseUserToUser(firebaseUser);
+    setState({ authenticating: false, authError: null, user });
+  };
+
   const onError = (authError: firebase.auth.Error) =>
     setState({ authenticating: false, authError, user: null });
 
+  const signIn = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithRedirect(provider).catch(error => console.error('Failed to signin', error));
+  };
+
   const signOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .catch(error => console.error('Failed to sign out', error));
+    auth.signOut().catch(error => console.error('Failed to sign out', error));
   };
 
   useEffect(() => firebase.auth().onAuthStateChanged(onAuthenticated, onError), []);
 
   return {
     ...state,
+    signIn,
     signOut
   };
 };

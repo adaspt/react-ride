@@ -3,9 +3,10 @@ import { RouteComponentProps } from '@reach/router';
 
 interface Props extends RouteComponentProps {
   authenticated: boolean;
+  onSignInWithGoogle: () => void;
 }
 
-const SignInPage: React.FC<Props> = ({ authenticated, navigate }) => {
+const SignInPage: React.FC<Props> = ({ authenticated, navigate, onSignInWithGoogle }) => {
   useEffect(() => {
     if (authenticated && navigate) {
       navigate('/');
@@ -16,14 +17,9 @@ const SignInPage: React.FC<Props> = ({ authenticated, navigate }) => {
     return null;
   }
 
-  const handleSignInWithGoogle = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
-  };
-
   return (
     <div className="mx-auto my-auto">
-      <button type="button" className="btn btn-danger btn-lg" onClick={handleSignInWithGoogle}>
+      <button type="button" className="btn btn-danger btn-lg" onClick={onSignInWithGoogle}>
         <i className="fa fa-google mr-2" /> Sign in with Google
       </button>
     </div>

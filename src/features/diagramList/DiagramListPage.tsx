@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, Link } from '@reach/router';
 
-import { User } from '../../hooks/useSession';
+import { User } from '../../model/auth';
 import { withAuthentication } from '../../components/withAuthentication';
 import { useDiagramList } from './hooks/useDiagramList';
 

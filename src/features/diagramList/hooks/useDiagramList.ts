@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { User } from '../../../model/auth';
 import { Diagram } from '../../../model/diagram';
-import { User } from '../../../hooks/useSession';
 
 interface State {
   list: Diagram[];

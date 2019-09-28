@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps } from '@reach/router';
 
+import { User } from '../../model/auth';
 import { withAuthentication } from '../../components/withAuthentication';
-import { User } from '../../hooks/useSession';
 
 interface Props extends RouteComponentProps {
   user: User;

@@ -1,7 +1,7 @@
 import { FunctionComponent, createElement } from 'react';
 import { NavigateFn } from '@reach/router';
 
-import { User } from '../hooks/useSession';
+import { User } from '../model/auth';
 
 type Optionalize<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
