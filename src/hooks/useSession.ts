@@ -4,7 +4,7 @@ import { User, mapFirebaseUserToUser } from '../model/auth';
 
 interface State {
   authenticating: boolean;
-  authError: firebase.auth.Error | null;
+  authError: string | null;
   user: User | null;
 }
 
@@ -18,13 +18,31 @@ export const useSession = () => {
   const auth = useMemo(() => firebase.auth(), []);
   const [state, setState] = useState(initialState);
 
-  const onAuthenticated = (firebaseUser: firebase.User | null) => {
-    const user = mapFirebaseUserToUser(firebaseUser);
-    setState({ authenticating: false, authError: null, user });
+  const onAuthenticated = async (firebaseUser: firebase.User | null) => {
+    if (!firebaseUser) {
+      setState({ authenticating: false, authError: null, user: null });
+      return;
+    }
+
+    try {
+      const user = mapFirebaseUserToUser(firebaseUser);
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(user.id)
+        .set({
+          displayName: user.displayName,
+          email: user.email
+        });
+
+      setState({ authenticating: false, authError: null, user });
+    } catch (error) {
+      setState({ authenticating: false, authError: '', user: null });
+    }
   };
 
-  const onError = (authError: firebase.auth.Error) =>
-    setState({ authenticating: false, authError, user: null });
+  const onError = (error: firebase.auth.Error) =>
+    setState({ authenticating: false, authError: `${error.code}: ${error.message}`, user: null });
 
   const signIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();

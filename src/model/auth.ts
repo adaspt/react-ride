@@ -1,15 +1,11 @@
 export interface User {
-  uid: string;
+  id: string;
   displayName: string;
+  email: string;
 }
 
-export const mapFirebaseUserToUser = (user: firebase.User | null): User | null => {
-  if (user == null) {
-    return null;
-  }
-
-  return {
-    uid: user.uid,
-    displayName: user.displayName || user.email || 'Unknown'
-  };
-};
+export const mapFirebaseUserToUser = (user: firebase.User): User => ({
+  id: user.uid,
+  displayName: user.displayName || 'Unknown',
+  email: user.email || 'unknown'
+});
