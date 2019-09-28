@@ -1,13 +1,19 @@
-import React from 'react';
-import { RouteComponentProps, Redirect } from '@reach/router';
+import React, { useEffect } from 'react';
+import { RouteComponentProps } from '@reach/router';
 
 interface Props extends RouteComponentProps {
   authenticated: boolean;
 }
 
-const SignInPage: React.FC<Props> = ({ authenticated }) => {
+const SignInPage: React.FC<Props> = ({ authenticated, navigate }) => {
+  useEffect(() => {
+    if (authenticated && navigate) {
+      navigate('/');
+    }
+  }, [authenticated, navigate]);
+
   if (authenticated) {
-    return <Redirect to="/" noThrow />;
+    return null;
   }
 
   const handleSignInWithGoogle = () => {
