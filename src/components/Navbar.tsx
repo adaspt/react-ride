@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import { Link, LinkGetProps } from '@reach/router';
 
-import { User } from '../hooks/useSession';
+import { User } from '../model/auth';
 
 interface Props {
   user: User | null;
