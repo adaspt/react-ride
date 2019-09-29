@@ -7,8 +7,7 @@ import Route from './components/Route';
 import HomePage from './features/home/HomePage';
 import SandboxPage from './features/sandbox/SandboxPage';
 import SignInPage from './features/signin/SignInPage';
-import DiagramListPage from './features/diagramList/DiagramListPage';
-import DiagramPage from './features/diagram/DiagramPage';
+import ProjectsPage from './features/projects/ProjectsPage';
 
 const App: React.FC = () => {
   const { authenticating, authError, user, signIn, signOut } = useSession();
@@ -27,9 +26,8 @@ const App: React.FC = () => {
       <Navbar user={user} onSignOut={signOut} />
       <Router className="d-flex flex-fill">
         <HomePage path="/" user={user} />
-        <Route path="/diagram">
-          <DiagramListPage path="/" user={user} />
-          <DiagramPage path="/:id" user={user} />
+        <Route path="/projects">
+          <ProjectsPage path="/" user={user} />
         </Route>
         <SandboxPage path="/sandbox" />
         <SignInPage path="/signin" authenticated={authenticated} onSignInWithGoogle={signIn} />

@@ -21,8 +21,8 @@ const Navbar: React.FC<Props> = ({ user, onSignOut }) => {
       </Link>
       <ul className="navbar-nav mr-auto">
         <li className="nav-item">
-          <Link to="/diagram" getProps={getNavLinkProps}>
-            Diagrams
+          <Link to="/projects" getProps={getNavLinkProps}>
+            Projects
           </Link>
         </li>
         <li className="nav-item">

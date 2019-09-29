@@ -1,4 +1,4 @@
-export interface Diagram {
+export interface Project {
   id: string;
   name: string;
   ownerId: string;
