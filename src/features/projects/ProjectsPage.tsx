@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Link } from '@reach/router';
 
 import { User } from '../../model/auth';
 import { withAuthentication } from '../../components/withAuthentication';
@@ -20,7 +20,17 @@ const ProjectsPage: React.FC<Props> = () => {
     return <>Loading...</>;
   }
 
-  return <>Projects {projects.length}</>;
+  return (
+    <>
+      {projects.map(x => (
+        <Link key={x.id} to={x.id}>
+          <div className="card">
+            <div className="card-body">{x.name}</div>
+          </div>
+        </Link>
+      ))}
+    </>
+  );
 };
 
 export default withAuthentication(ProjectsPage);
