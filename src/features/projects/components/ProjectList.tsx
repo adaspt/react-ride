@@ -16,8 +16,16 @@ const ProjectList: React.FC<Props> = ({ projects, error, loading }) => {
     return <Error message={error} />;
   }
 
-  if (!projects || loading) {
+  if (loading) {
     return <Loading />;
+  }
+
+  if (!projects) {
+    return null;
+  }
+
+  if (!projects.length) {
+    return <p>You have no projects yet. Create a new one.</p>;
   }
 
   return (
