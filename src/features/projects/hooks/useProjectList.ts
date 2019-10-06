@@ -7,27 +7,10 @@ import { useAsyncData } from '../../../hooks/useAsyncData';
 
 export const useProjectList = () => {
   const db = useDatabase();
-  const {
-    data: projects,
-    error: projectsError,
-    loading: projectsLoading,
-    loadStart,
-    loadSuccess,
-    loadFailure
-  } = useAsyncData<Project[]>();
-
-  const fetchData = async () => {
-    try {
-      loadStart();
-      const data = await db.execute(getProjects());
-      loadSuccess(data);
-    } catch (ex) {
-      loadFailure(ex.message || 'Failed to load data');
-    }
-  };
+  const { data: projects, error: projectsError, loading: projectsLoading, load } = useAsyncData<Project[]>();
 
   useEffect(() => {
-    fetchData();
+    load(() => db.execute(getProjects()));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
