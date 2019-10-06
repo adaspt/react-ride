@@ -9,9 +9,7 @@ export const useProjectList = () => {
   const db = useDatabase();
   const { data: projects, error: projectsError, loading: projectsLoading, load } = useAsyncData<Project[]>();
 
-  useEffect(() => {
-    load(() => db.execute(getProjects()));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(load(() => db.execute(getProjects())), []);
 
   return {
     projects,

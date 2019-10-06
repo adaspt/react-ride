@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { EffectCallback, useState } from 'react';
 
 interface State<T> {
   data: T | null;
@@ -19,14 +19,28 @@ export const useAsyncData = <T>() => {
   const loadSuccess = (data: T) => setState({ data, loading: false, error: null });
   const loadFailure = (error: string) => setState(prevState => ({ ...prevState, loading: false, error }));
 
-  const load = async (command: () => Promise<T>) => {
-    try {
-      loadStart();
-      const data = await command();
-      loadSuccess(data);
-    } catch (ex) {
-      loadFailure(ex.message || 'Failed to load data.');
-    }
+  const load = (command: () => Promise<T>): EffectCallback => () => {
+    let aborted = false;
+
+    const execute = async () => {
+      try {
+        loadStart();
+        const data = await command();
+        if (!aborted) {
+          loadSuccess(data);
+        }
+      } catch (ex) {
+        if (!aborted) {
+          loadFailure(ex.message || 'Failed to load data.');
+        }
+      }
+    };
+
+    execute();
+
+    return () => {
+      aborted = true;
+    };
   };
 
   return {

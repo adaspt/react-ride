@@ -9,9 +9,7 @@ export const useDiagramList = (projectId: string) => {
   const db = useDatabase();
   const { data: diagrams, error: diagramsError, loading: diagramsLoading, load } = useAsyncData<Diagram[]>();
 
-  useEffect(() => {
-    load(() => db.execute(getDiagrams(projectId)));
-  }, [projectId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(load(() => db.execute(getDiagrams(projectId))), [projectId]);
 
   return {
     diagrams,
