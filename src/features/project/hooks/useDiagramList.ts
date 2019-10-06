@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { Project } from '../../../model/projects';
-import { getProjects } from '../../../api/projects';
+import { Diagram } from '../../../model/diagrams';
+import { getDiagrams } from '../../../api/diagrams';
 import { useDatabase } from '../../../hooks/useDatabase';
 import { useAsyncData } from '../../../hooks/useAsyncData';
 
@@ -14,15 +14,15 @@ export const useDiagramList = (projectId: string) => {
     loadStart,
     loadSuccess,
     loadFailure
-  } = useAsyncData<Project[]>();
+  } = useAsyncData<Diagram[]>();
 
   const fetchData = async (projectId: string) => {
     try {
       loadStart();
-      const data = await db.execute(getProjects());
+      const data = await db.execute(getDiagrams(projectId));
       loadSuccess(data);
     } catch (ex) {
-      loadFailure(ex.message || 'Failed to load data');
+      loadFailure(ex.message || 'Failed to load data.');
     }
   };
 

@@ -24,5 +24,9 @@ service cloud.firestore {
         && request.resource.data.name is string
         && request.resource.data.ownerId is string;
     }
+    
+    match /projects/{project}/diagrams/{diagram} {
+    	allow read: if isAuthenticated();
+    }
   }
 }

@@ -16,12 +16,17 @@ interface Props extends RouteComponentProps<RouteParams> {
 }
 
 const ProjectPage: React.FC<Props> = ({ projectId = '' }) => {
-  const { diagrams } = useDiagramList(projectId);
+  const { diagrams, diagramsError, diagramsLoading } = useDiagramList(projectId);
 
   return (
     <Content>
       <div className="container-fluid py-5">
-        <DiagramList projectId={projectId} diagrams={diagrams} error={null} loading={false} />
+        <DiagramList
+          projectId={projectId}
+          diagrams={diagrams}
+          error={diagramsError}
+          loading={diagramsLoading}
+        />
       </div>
     </Content>
   );
