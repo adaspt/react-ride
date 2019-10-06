@@ -20,13 +20,17 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create, update: if isAuthenticated()
         && request.resource.data.keys().hasAll(['name', 'ownerId'])
-        && request.resource.data.keys().size == 2
+        && request.resource.data.size() == 2
         && request.resource.data.name is string
         && request.resource.data.ownerId is string;
     }
     
     match /projects/{project}/diagrams/{diagram} {
     	allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+      	&& request.resource.data.keys().hasAll(['name'])
+        && request.resource.data.size() == 1
+        && request.resource.data.name is string;
     }
   }
 }
