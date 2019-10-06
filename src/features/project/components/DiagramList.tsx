@@ -10,9 +10,10 @@ interface Props {
   error: string | null;
   loading: boolean;
   diagrams: Diagram[] | null;
+  onNewDiagram: () => void;
 }
 
-const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams }) => {
+const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams, onNewDiagram }) => {
   if (error) {
     return <Error message={error} />;
   }
@@ -26,7 +27,14 @@ const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams }) =
   }
 
   if (!diagrams.length) {
-    return <p>You have no diagrams yet. Create a new one.</p>;
+    return (
+      <p>
+        You have no diagrams yet.{' '}
+        <button type="button" className="btn btn-outline-secondary" onClick={onNewDiagram}>
+          <i className="fa fa-plus"></i> Create new
+        </button>
+      </p>
+    );
   }
 
   return (

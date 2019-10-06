@@ -1,7 +1,7 @@
 import { User } from '../model/auth';
 import { ApiRequest } from './model';
 
-const COLLECTION = 'users';
+const getCollectionPath = () => 'users';
 
 type Dto = Omit<User, 'id'>;
 
@@ -12,6 +12,6 @@ const mapModelToDto = (user: User): Dto => ({
 
 export const setUser = (user: User): ApiRequest => db =>
   db
-    .collection(COLLECTION)
+    .collection(getCollectionPath())
     .doc(user.id)
     .set(mapModelToDto(user));
