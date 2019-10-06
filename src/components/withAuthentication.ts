@@ -3,8 +3,6 @@ import { NavigateFn } from '@reach/router';
 
 import { User } from '../model/auth';
 
-type Optionalize<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
 interface InjectedProps {
   user: User;
   navigate?: NavigateFn;
@@ -13,7 +11,7 @@ interface InjectedProps {
 export function withAuthentication<Props extends InjectedProps = InjectedProps>(
   WrappedComponent: FunctionComponent<Props>
 ) {
-  type BaseProps = Optionalize<Props, keyof InjectedProps> & {
+  type BaseProps = Omit<Props, keyof InjectedProps> & {
     user: User | null;
     navigate?: NavigateFn;
   };
