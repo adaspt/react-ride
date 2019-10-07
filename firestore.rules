@@ -20,7 +20,7 @@ service cloud.firestore {
       allow read: if isAuthenticated();
       allow create, update: if isAuthenticated()
         && request.resource.data.keys().hasAll(['name', 'ownerId'])
-        && request.resource.data.size() == 2
+        && request.resource.data.size == 2
         && request.resource.data.name is string
         && request.resource.data.ownerId is string;
     }
@@ -31,6 +31,13 @@ service cloud.firestore {
       	&& request.resource.data.keys().hasAll(['name'])
         && request.resource.data.size() == 1
         && request.resource.data.name is string;
+    }
+    
+    match /projects/{project}/components/{component} {
+    	allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+      	&& request.resource.data.keys().hasAll(['components'])
+        && request.resource.data.size() == 1;
     }
   }
 }
