@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Link, LinkGetProps } from '@reach/router';
+import { Match, Link, LinkGetProps } from '@reach/router';
 
 import { User } from '../model/auth';
 
@@ -9,8 +9,8 @@ interface Props {
   onSignOut: () => void;
 }
 
-const getNavLinkProps = ({ isPartiallyCurrent }: LinkGetProps) => ({
-  className: clsx('nav-link', isPartiallyCurrent && 'active')
+const getNavLinkProps = (matchPartial: boolean) => ({ isCurrent, isPartiallyCurrent }: LinkGetProps) => ({
+  className: clsx('nav-link', (isCurrent || (matchPartial && isPartiallyCurrent)) && 'active')
 });
 
 const Navbar: React.FC<Props> = ({ user, onSignOut }) => {
@@ -21,12 +21,23 @@ const Navbar: React.FC<Props> = ({ user, onSignOut }) => {
       </Link>
       <ul className="navbar-nav mr-auto">
         <li className="nav-item">
-          <Link to="/projects" getProps={getNavLinkProps}>
+          <Link to="/projects" getProps={getNavLinkProps(false)}>
             Projects
           </Link>
         </li>
+        <Match<{ projectId: string }> path="/projects/:projectId/*">
+          {({ match }) =>
+            match && (
+              <li className="nav-item">
+                <Link to={`/projects/${match.projectId}`} getProps={getNavLinkProps(true)}>
+                  Diagrams
+                </Link>
+              </li>
+            )
+          }
+        </Match>
         <li className="nav-item">
-          <Link to="/sandbox" getProps={getNavLinkProps}>
+          <Link to="/sandbox" getProps={getNavLinkProps(false)}>
             Sandbox
           </Link>
         </li>
