@@ -8,7 +8,10 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import { useProject } from '../project/hooks/useProject';
 import { useDiagram } from './hooks/useDiagram';
+import { useSelection } from './hooks/useSelection';
 import DiagramSideBar from './components/DiagramSideBar';
+import DiagramSurface from './components/DiagramSurface';
+import { useComponentTree } from './hooks/useComponentTree';
 
 interface RouteParams {
   projectId: string;
@@ -22,6 +25,8 @@ interface Props extends RouteComponentProps<RouteParams> {
 const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
   const { project, projectError, projectLoading } = useProject(projectId);
   const { diagram, diagramError, diagramLoading } = useDiagram(projectId, diagramId);
+  const { tree, treeError, treeLoading, updateComponent } = useComponentTree(projectId, diagramId);
+  const selection = useSelection();
 
   const error = projectError || diagramError;
   if (error) {
@@ -36,11 +41,29 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     return null;
   }
 
-  const renderSideBar = () => <DiagramSideBar project={project} diagram={diagram} />;
+  const renderSideBar = () => (
+    <DiagramSideBar
+      project={project}
+      diagram={diagram}
+      tree={tree}
+      selectedTab={selection.tab}
+      selectedComponentId={selection.componentId}
+      selectedPropIndex={selection.propIndex}
+      selectedHookIndex={selection.hookIndex}
+      onComponentUpdated={updateComponent}
+      onTabChange={selection.selectTab}
+    />
+  );
 
   return (
     <Content renderSideBarContent={renderSideBar}>
-      Diagram {project.name} {diagram.name}
+      <DiagramSurface
+        tree={tree}
+        treeError={treeError}
+        treeLoading={treeLoading}
+        selectedComponentId={selection.componentId}
+        onComponentSelect={selection.selectComponent}
+      />
     </Content>
   );
 };

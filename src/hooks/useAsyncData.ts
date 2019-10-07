@@ -43,8 +43,12 @@ export const useAsyncData = <T>() => {
     };
   };
 
+  const update = (fn: (prevData: T | null) => T | null) =>
+    setState(prevState => ({ ...prevState, data: fn(prevState.data) }));
+
   return {
     ...state,
-    load
+    load,
+    update
   };
 };
