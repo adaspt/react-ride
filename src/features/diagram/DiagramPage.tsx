@@ -8,6 +8,7 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import { useProject } from '../project/hooks/useProject';
 import { useDiagram } from './hooks/useDiagram';
+import DiagramSideBar from './components/DiagramSideBar';
 
 interface RouteParams {
   projectId: string;
@@ -35,8 +36,10 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     return null;
   }
 
+  const renderSideBar = () => <DiagramSideBar project={project} diagram={diagram} />;
+
   return (
-    <Content>
+    <Content renderSideBarContent={renderSideBar}>
       Diagram {project.name} {diagram.name}
     </Content>
   );

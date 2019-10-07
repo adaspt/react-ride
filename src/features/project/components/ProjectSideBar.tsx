@@ -22,15 +22,11 @@ const ProjectSideBar: React.FC<Props> = ({
     <>
       <Panel>
         <div className="card-header">Project</div>
-        <div className="card-body">
-          <p>{project.name}</p>
-        </div>
+        <div className="card-body">{project.name}</div>
       </Panel>
       <Panel continuous={true} fill={true}>
         <div className="card-header">Shared with</div>
-        <div className="card-body">
-          <p>Everyone</p>
-        </div>
+        <div className="card-body">Everyone</div>
       </Panel>
       {creatingNewDiagram && (
         <Panel continuous={true}>
