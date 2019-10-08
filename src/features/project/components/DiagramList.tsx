@@ -26,6 +26,11 @@ const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams, onN
     return null;
   }
 
+  const handleNewDiagramClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNewDiagram();
+  };
+
   if (!diagrams.length) {
     return (
       <p>
@@ -42,6 +47,16 @@ const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams, onN
       {diagrams.map(x => (
         <ListCard key={x.id} title={x.name} link={`/projects/${projectId}/${x.id}`} />
       ))}
+      <div className="col-4">
+        <div className="card bg-light">
+          <div className="card-body">
+            <h5 className="card-title">
+              <i className="fa fa-plus"></i> Add new diagram
+            </h5>
+            <a href="#create" className="stretched-link" onClick={handleNewDiagramClick}></a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
