@@ -8,12 +8,20 @@ import SizeInput from '../../../components/SizeInput';
 interface Props {
   component: Component;
   onUpdated: (componentId: string, changes: Partial<Component>) => void;
+  onDelete: (componentId: string) => void;
   onComponentAdd: (parentId: string) => void;
   onPropAdd: (componentId: string) => void;
   onHookAdd: (componentId: string) => void;
 }
 
-const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd, onPropAdd, onHookAdd }) => {
+const ComponentPanel: React.FC<Props> = ({
+  component,
+  onUpdated,
+  onDelete,
+  onComponentAdd,
+  onPropAdd,
+  onHookAdd
+}) => {
   const { values, handleChange, handleSubmit } = useForm(component);
 
   const handleUpdate = ({ name }: Component) => {
@@ -77,7 +85,13 @@ const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd,
                   <i className="fa fa-microchip"></i>
                 </button>
               </div>
-              <button type="button" className="btn btn-danger" title="Delete component">
+              <button
+                type="button"
+                disabled={!component.parentId}
+                className="btn btn-danger"
+                title="Delete component"
+                onClick={() => onDelete(component.id)}
+              >
                 <i className="fa fa-trash"></i>
               </button>
             </div>

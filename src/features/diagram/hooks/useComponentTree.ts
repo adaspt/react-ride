@@ -7,6 +7,7 @@ import {
   ComponentHook,
   buildComponentTree,
   updateComponentAction,
+  deleteComponentAction,
   addComponentAction,
   addPropAction,
   updatePropAction,
@@ -46,6 +47,10 @@ export const useComponentTree = (
     treeLoading,
     updateComponent: (id: string, changes: Partial<Component>) => {
       update(ifLoaded(updateComponentAction(id, changes)));
+    },
+    deleteComponent: (id: string) => {
+      update(ifLoaded(deleteComponentAction(id)));
+      select(null, null, null);
     },
     addComponent: (parentId: string) => {
       const componentId = uniqueId();

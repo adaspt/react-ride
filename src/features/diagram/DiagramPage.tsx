@@ -9,9 +9,9 @@ import Error from '../../components/Error';
 import { useProject } from '../project/hooks/useProject';
 import { useDiagram } from './hooks/useDiagram';
 import { useSelection } from './hooks/useSelection';
+import { useComponentTree } from './hooks/useComponentTree';
 import DiagramSideBar from './components/DiagramSideBar';
 import DiagramSurface from './components/DiagramSurface';
-import { useComponentTree } from './hooks/useComponentTree';
 
 interface RouteParams {
   projectId: string;
@@ -31,6 +31,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     treeError,
     treeLoading,
     updateComponent,
+    deleteComponent,
     addComponent,
     addProp,
     updateProp,
@@ -63,8 +64,9 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       selectedComponentId={selection.componentId}
       selectedPropIndex={selection.propIndex}
       selectedHookIndex={selection.hookIndex}
-      onComponentUpdated={updateComponent}
       onTabChange={selection.selectTab}
+      onComponentUpdated={updateComponent}
+      onComponentDelete={deleteComponent}
       onComponentAdd={addComponent}
       onPropSelect={(componentId, propIndex) => selection.selectComponent(componentId, propIndex, null)}
       onPropAdd={addProp}

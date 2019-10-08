@@ -1,3 +1,6 @@
+import { omit } from '../utils/objects';
+import { without } from '../utils/arrays';
+
 export interface ComponentProperty {
   name: string;
   type: string;
@@ -62,6 +65,27 @@ export const updateComponentAction = (componentId: string, changes: Partial<Comp
     [componentId]: { ...tree.components[componentId], ...changes }
   }
 });
+
+export const deleteComponentAction = (componentId: string) => (tree: ComponentTree): ComponentTree => {
+  const parentId = tree.components[componentId].parentId!;
+
+  const componentIdsToRemove: string[] = [];
+  const collectComponentsToRemove = (id: string) => {
+    componentIdsToRemove.push(id);
+    tree.children[id].forEach(collectComponentsToRemove);
+  };
+
+  collectComponentsToRemove(componentId);
+
+  return {
+    ...tree,
+    components: omit<Component>(componentIdsToRemove)(tree.components),
+    children: {
+      ...omit<string[]>(componentIdsToRemove)(tree.children),
+      [parentId]: without([componentId])(tree.children[parentId])
+    }
+  };
+};
 
 export const addComponentAction = (parentId: string, componentId: string) => (
   tree: ComponentTree
