@@ -89,6 +89,39 @@ export const addPropAction = (componentId: string) => (tree: ComponentTree): Com
   }
 });
 
+export const updatePropAction = (componentId: string, propIndex: number, values: ComponentProperty) => (
+  tree: ComponentTree
+): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      properties: [
+        ...tree.components[componentId].properties.slice(0, propIndex - 1),
+        values,
+        ...tree.components[componentId].properties.slice(propIndex + 1)
+      ]
+    }
+  }
+});
+
+export const deletePropAction = (componentId: string, propIndex: number) => (
+  tree: ComponentTree
+): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      properties: [
+        ...tree.components[componentId].properties.slice(0, propIndex - 1),
+        ...tree.components[componentId].properties.slice(propIndex + 1)
+      ]
+    }
+  }
+});
+
 export const addHookAction = (componentId: string) => (tree: ComponentTree): ComponentTree => ({
   ...tree,
   components: {

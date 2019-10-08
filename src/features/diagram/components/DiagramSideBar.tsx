@@ -2,11 +2,12 @@ import React from 'react';
 
 import { Project } from '../../../model/projects';
 import { Diagram } from '../../../model/diagrams';
-import { ComponentTree, Component } from '../../../model/component';
+import { ComponentTree, Component, ComponentProperty } from '../../../model/component';
 import { DiagramTab } from '../hooks/useSelection';
 import DiagramPanel from './DiagramPanel';
 import ComponentPanel from './ComponentPanel';
 import PropsAndHooksPanel from './PropsAndHooksPanel';
+import PropPanel from './PropPanel';
 
 interface Props {
   project: Project;
@@ -21,6 +22,9 @@ interface Props {
   onComponentAdd: (parentId: string) => void;
   onPropSelect: (componentId: string, index: number) => void;
   onPropAdd: (componentId: string) => void;
+  onPropUpdated: (componentId: string, propIndex: number, values: ComponentProperty) => void;
+  onPropCancel: () => void;
+  onPropDelete: (componentId: string, propIndex: number) => void;
   onHookSelect: (componentId: string, index: number) => void;
   onHookAdd: (componentId: string) => void;
 }
@@ -38,6 +42,9 @@ const DiagramSideBar: React.FC<Props> = ({
   onComponentAdd,
   onPropSelect,
   onPropAdd,
+  onPropUpdated,
+  onPropCancel,
+  onPropDelete,
   onHookSelect,
   onHookAdd
 }) => {
@@ -51,7 +58,21 @@ const DiagramSideBar: React.FC<Props> = ({
     onHookAdd(componentId);
   };
 
+  const handlePropUpdated = async (values: ComponentProperty) => {
+    if (selectedComponentId && selectedPropIndex != null) {
+      onPropUpdated(selectedComponentId, selectedPropIndex, values);
+    }
+  };
+
+  const handlePropDelete = () => {
+    if (selectedComponentId && selectedPropIndex != null) {
+      onPropDelete(selectedComponentId, selectedPropIndex);
+    }
+  };
+
   const selectedComponent = tree && selectedComponentId && tree.components[selectedComponentId];
+  const selectedProp =
+    selectedComponent && selectedPropIndex != null && selectedComponent.properties[selectedPropIndex];
   return (
     <>
       <DiagramPanel project={project} diagram={diagram} />
@@ -73,6 +94,14 @@ const DiagramSideBar: React.FC<Props> = ({
           onTabChange={onTabChange}
           onPropSelect={onPropSelect}
           onHookSelect={onHookSelect}
+        />
+      )}
+      {selectedProp && (
+        <PropPanel
+          prop={selectedProp}
+          onUpdate={handlePropUpdated}
+          onCancel={onPropCancel}
+          onDelete={handlePropDelete}
         />
       )}
     </>

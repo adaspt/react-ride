@@ -26,11 +26,17 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
   const { project, projectError, projectLoading } = useProject(projectId);
   const { diagram, diagramError, diagramLoading } = useDiagram(projectId, diagramId);
   const selection = useSelection();
-  const { tree, treeError, treeLoading, updateComponent, addComponent, addProp, addHook } = useComponentTree(
-    projectId,
-    diagramId,
-    selection.selectComponent
-  );
+  const {
+    tree,
+    treeError,
+    treeLoading,
+    updateComponent,
+    addComponent,
+    addProp,
+    updateProp,
+    deleteProp,
+    addHook
+  } = useComponentTree(projectId, diagramId, selection.selectComponent);
 
   const error = projectError || diagramError;
   if (error) {
@@ -60,6 +66,9 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       onComponentAdd={addComponent}
       onPropSelect={(componentId, propIndex) => selection.selectComponent(componentId, propIndex, null)}
       onPropAdd={addProp}
+      onPropUpdated={updateProp}
+      onPropCancel={() => selection.selectComponent(selection.componentId, null, null)}
+      onPropDelete={deleteProp}
       onHookSelect={(componentId, hookIndex) => selection.selectComponent(componentId, null, hookIndex)}
       onHookAdd={addHook}
     />

@@ -3,11 +3,14 @@ import { useEffect } from 'react';
 import {
   ComponentTree,
   Component,
+  ComponentProperty,
   buildComponentTree,
   updateComponentAction,
   addComponentAction,
   addPropAction,
-  addHookAction
+  updatePropAction,
+  addHookAction,
+  deletePropAction
 } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
 import { getComponents } from '../../../api/components';
@@ -50,6 +53,18 @@ export const useComponentTree = (
       update(ifLoaded(addPropAction(componentId)));
       if (tree) {
         select(componentId, tree.components[componentId].properties.length, null);
+      }
+    },
+    updateProp: (componentId: string, propIndex: number, values: ComponentProperty) => {
+      update(ifLoaded(updatePropAction(componentId, propIndex, values)));
+      if (tree) {
+        select(componentId, null, null);
+      }
+    },
+    deleteProp: (componentId: string, propIndex: number) => {
+      update(ifLoaded(deletePropAction(componentId, propIndex)));
+      if (tree) {
+        select(componentId, null, null);
       }
     },
     addHook: (componentId: string) => {
