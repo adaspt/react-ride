@@ -30,6 +30,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     tree,
     treeError,
     treeLoading,
+    saveContent,
     updateComponent,
     deleteComponent,
     moveComponentIn,
@@ -64,6 +65,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       project={project}
       diagram={diagram}
       tree={tree}
+      onSaveContent={saveContent}
       selectedTab={selection.tab}
       selectedComponentId={selection.componentId}
       selectedPropIndex={selection.propIndex}

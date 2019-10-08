@@ -5,7 +5,7 @@ import {
   Component,
   ComponentProperty,
   ComponentHook,
-  buildComponentTree,
+  emptyTree,
   updateComponentAction,
   deleteComponentAction,
   moveComponentInAction,
@@ -21,7 +21,7 @@ import {
   deleteHookAction
 } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
-import { getComponents } from '../../../api/components';
+import { getTree, saveTree } from '../../../api/components';
 import { useDatabase } from '../../../hooks/useDatabase';
 import { useAsyncData } from '../../../hooks/useAsyncData';
 
@@ -39,16 +39,25 @@ export const useComponentTree = (
 
   useEffect(
     load(async () => {
-      const components = await db.execute(getComponents(projectId, diagramId));
-      return buildComponentTree(components);
+      const tree = await db.execute(getTree(projectId, diagramId));
+      return tree || emptyTree;
     }),
     [projectId, diagramId]
   );
+
+  const saveContent = async () => {
+    if (!tree) {
+      return;
+    }
+
+    await db.execute(saveTree(projectId, diagramId, tree));
+  };
 
   return {
     tree,
     treeError,
     treeLoading,
+    saveContent,
     updateComponent: (id: string, changes: Partial<Component>) => {
       update(ifLoaded(updateComponentAction(id, changes)));
     },

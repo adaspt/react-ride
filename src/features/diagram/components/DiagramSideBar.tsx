@@ -18,6 +18,7 @@ interface Props {
   selectedComponentId: string | null;
   selectedPropIndex: number | null;
   selectedHookIndex: number | null;
+  onSaveContent: () => void;
   onTabChange: (tab: DiagramTab) => void;
   onComponentUpdate: (componentId: string, changes: Partial<Component>) => void;
   onComponentDelete: (componentId: string) => void;
@@ -46,6 +47,7 @@ const DiagramSideBar: React.FC<Props> = ({
   selectedComponentId,
   selectedPropIndex,
   selectedHookIndex,
+  onSaveContent,
   onTabChange,
   onComponentUpdate,
   onComponentDelete,
@@ -107,7 +109,7 @@ const DiagramSideBar: React.FC<Props> = ({
 
   return (
     <>
-      <DiagramPanel project={project} diagram={diagram} />
+      <DiagramPanel project={project} diagram={diagram} onSaveContent={onSaveContent} />
       {selectedComponent && (
         <ComponentPanel
           component={selectedComponent}
