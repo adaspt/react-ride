@@ -18,6 +18,7 @@ interface Props {
   selectedHookIndex: number | null;
   onComponentUpdated: (componentId: string, changes: Partial<Component>) => void;
   onTabChange: (tab: DiagramTab) => void;
+  onComponentAdd: (parentId: string) => void;
 }
 
 const DiagramSideBar: React.FC<Props> = ({
@@ -27,13 +28,20 @@ const DiagramSideBar: React.FC<Props> = ({
   selectedTab,
   selectedComponentId,
   onComponentUpdated,
-  onTabChange
+  onTabChange,
+  onComponentAdd
 }) => {
   const selectedComponent = tree && selectedComponentId && tree.components[selectedComponentId];
   return (
     <>
       <DiagramPanel project={project} diagram={diagram} />
-      {selectedComponent && <ComponentPanel component={selectedComponent} onUpdated={onComponentUpdated} />}
+      {selectedComponent && (
+        <ComponentPanel
+          component={selectedComponent}
+          onUpdated={onComponentUpdated}
+          onComponentAdd={onComponentAdd}
+        />
+      )}
       {selectedComponent && (
         <PropsAndHooksPanel component={selectedComponent} selectedTab={selectedTab} changeTab={onTabChange} />
       )}

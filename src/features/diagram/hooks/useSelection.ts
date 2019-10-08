@@ -24,23 +24,15 @@ const selectTabAction = (tab: DiagramTab): Action => prevState => ({
   tab
 });
 
-const selectComponentAction = (componentId: string | null): Action => prevState => ({
+const selectComponentAction = (
+  componentId: string | null,
+  propIndex: number | null,
+  hookIndex: number | null
+): Action => prevState => ({
   ...prevState,
   componentId,
-  propIndex: null,
-  hookIndex: null
-});
-
-const selectPropAction = (propIndex: number | null): Action => prevState => ({
-  ...prevState,
-  propIndex,
-  hookIndex: null
-});
-
-const selectHookAction = (hookIndex: number | null): Action => prevState => ({
-  ...prevState,
-  propIndex: null,
-  hookIndex
+  propIndex: componentId ? propIndex : null,
+  hookIndex: componentId ? (propIndex ? null : hookIndex) : null
 });
 
 export const useSelection = () => {
@@ -55,14 +47,6 @@ export const useSelection = () => {
     selectComponent: compose(
       setState,
       selectComponentAction
-    ),
-    selectProp: compose(
-      setState,
-      selectPropAction
-    ),
-    selectHook: compose(
-      setState,
-      selectHookAction
     )
   };
 };

@@ -4,13 +4,23 @@ import {
   ComponentTree,
   Component,
   buildComponentTree,
-  updateComponentAction
+  updateComponentAction,
+  addComponentAction
 } from '../../../model/component';
+import { uniqueId } from '../../../utils/strings';
 import { getComponents } from '../../../api/components';
 import { useDatabase } from '../../../hooks/useDatabase';
 import { useAsyncData } from '../../../hooks/useAsyncData';
 
-export const useComponentTree = (projectId: string, diagramId: string) => {
+const ifLoaded = (fn: (prevData: ComponentTree) => ComponentTree) => (
+  prevData: ComponentTree | null
+): ComponentTree | null => (prevData ? fn(prevData) : prevData);
+
+export const useComponentTree = (
+  projectId: string,
+  diagramId: string,
+  select: (componentId: string | null, propIndex: number | null, hookIndex: number | null) => void
+) => {
   const db = useDatabase();
   const { data: tree, error: treeError, loading: treeLoading, load, update } = useAsyncData<ComponentTree>();
 
@@ -26,13 +36,13 @@ export const useComponentTree = (projectId: string, diagramId: string) => {
     tree,
     treeError,
     treeLoading,
-    updateComponent: (id: string, changes: Partial<Component>) =>
-      update(prevData => {
-        if (!prevData) {
-          return prevData;
-        }
-
-        return updateComponentAction(id, changes)(prevData);
-      })
+    updateComponent: (id: string, changes: Partial<Component>) => {
+      update(ifLoaded(updateComponentAction(id, changes)));
+    },
+    addComponent: (parentId: string) => {
+      const componentId = uniqueId();
+      update(ifLoaded(addComponentAction(parentId, componentId)));
+      select(componentId, null, null);
+    }
   };
 };

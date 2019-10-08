@@ -8,15 +8,18 @@ import SizeInput from '../../../components/SizeInput';
 interface Props {
   component: Component;
   onUpdated: (componentId: string, changes: Partial<Component>) => void;
+  onComponentAdd: (parentId: string) => void;
 }
 
-const ComponentPanel: React.FC<Props> = ({ component, onUpdated }) => {
+const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd }) => {
   const { values, change, handleChange, handleSubmit } = useForm(component);
 
-  const handleUpdate = ({ id, name, width }: Component) => {
-    onUpdated(id, { name, width });
+  const handleUpdate = ({ name, width }: Component) => {
+    onUpdated(component.id, { name, width });
     return Promise.resolve();
   };
+
+  const handleComponentAdd = () => onComponentAdd(component.id);
 
   return (
     <Panel continuous>
@@ -41,7 +44,12 @@ const ComponentPanel: React.FC<Props> = ({ component, onUpdated }) => {
             </button>
             <div className="btn-toolbar ml-auto">
               <div className="btn-group mr-2">
-                <button type="button" className="btn btn-success" title="Add component">
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  title="Add component"
+                  onClick={handleComponentAdd}
+                >
                   <i className="fa fa-cube"></i>
                 </button>
                 <button type="button" className="btn btn-success" title="Add property">

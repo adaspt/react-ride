@@ -63,6 +63,21 @@ export const updateComponentAction = (componentId: string, changes: Partial<Comp
   }
 });
 
+export const addComponentAction = (parentId: string, componentId: string) => (
+  tree: ComponentTree
+): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: { id: componentId, parentId, name: 'Component', width: 12, properties: [], hooks: [] }
+  },
+  children: {
+    ...tree.children,
+    [componentId]: [],
+    [parentId]: [...tree.children[parentId], componentId]
+  }
+});
+
 // -----------------------------------------------------------
 
 export const saveComponentTree = (tree: ComponentTree) => {

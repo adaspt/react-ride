@@ -25,8 +25,12 @@ interface Props extends RouteComponentProps<RouteParams> {
 const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
   const { project, projectError, projectLoading } = useProject(projectId);
   const { diagram, diagramError, diagramLoading } = useDiagram(projectId, diagramId);
-  const { tree, treeError, treeLoading, updateComponent } = useComponentTree(projectId, diagramId);
   const selection = useSelection();
+  const { tree, treeError, treeLoading, updateComponent, addComponent } = useComponentTree(
+    projectId,
+    diagramId,
+    selection.selectComponent
+  );
 
   const error = projectError || diagramError;
   if (error) {
@@ -43,6 +47,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
 
   const renderSideBar = () => (
     <DiagramSideBar
+      key={selection.componentId || ''}
       project={project}
       diagram={diagram}
       tree={tree}
@@ -52,6 +57,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       selectedHookIndex={selection.hookIndex}
       onComponentUpdated={updateComponent}
       onTabChange={selection.selectTab}
+      onComponentAdd={addComponent}
     />
   );
 
@@ -62,7 +68,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
         treeError={treeError}
         treeLoading={treeLoading}
         selectedComponentId={selection.componentId}
-        onComponentSelect={selection.selectComponent}
+        onComponentSelect={componentId => selection.selectComponent(componentId, null, null)}
       />
     </Content>
   );
