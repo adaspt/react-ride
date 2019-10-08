@@ -19,6 +19,10 @@ interface Props {
   onComponentUpdated: (componentId: string, changes: Partial<Component>) => void;
   onTabChange: (tab: DiagramTab) => void;
   onComponentAdd: (parentId: string) => void;
+  onPropSelect: (componentId: string, index: number) => void;
+  onPropAdd: (componentId: string) => void;
+  onHookSelect: (componentId: string, index: number) => void;
+  onHookAdd: (componentId: string) => void;
 }
 
 const DiagramSideBar: React.FC<Props> = ({
@@ -27,10 +31,26 @@ const DiagramSideBar: React.FC<Props> = ({
   tree,
   selectedTab,
   selectedComponentId,
+  selectedPropIndex,
+  selectedHookIndex,
   onComponentUpdated,
   onTabChange,
-  onComponentAdd
+  onComponentAdd,
+  onPropSelect,
+  onPropAdd,
+  onHookSelect,
+  onHookAdd
 }) => {
+  const handlePropAdd = (componentId: string) => {
+    onTabChange('props');
+    onPropAdd(componentId);
+  };
+
+  const handleHookAdd = (componentId: string) => {
+    onTabChange('hooks');
+    onHookAdd(componentId);
+  };
+
   const selectedComponent = tree && selectedComponentId && tree.components[selectedComponentId];
   return (
     <>
@@ -40,10 +60,20 @@ const DiagramSideBar: React.FC<Props> = ({
           component={selectedComponent}
           onUpdated={onComponentUpdated}
           onComponentAdd={onComponentAdd}
+          onPropAdd={handlePropAdd}
+          onHookAdd={handleHookAdd}
         />
       )}
       {selectedComponent && (
-        <PropsAndHooksPanel component={selectedComponent} selectedTab={selectedTab} changeTab={onTabChange} />
+        <PropsAndHooksPanel
+          component={selectedComponent}
+          selectedTab={selectedTab}
+          selectedPropIndex={selectedPropIndex}
+          selectedHookIndex={selectedHookIndex}
+          onTabChange={onTabChange}
+          onPropSelect={onPropSelect}
+          onHookSelect={onHookSelect}
+        />
       )}
     </>
   );

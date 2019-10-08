@@ -9,9 +9,11 @@ interface Props {
   component: Component;
   onUpdated: (componentId: string, changes: Partial<Component>) => void;
   onComponentAdd: (parentId: string) => void;
+  onPropAdd: (componentId: string) => void;
+  onHookAdd: (componentId: string) => void;
 }
 
-const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd }) => {
+const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd, onPropAdd, onHookAdd }) => {
   const { values, handleChange, handleSubmit } = useForm(component);
 
   const handleUpdate = ({ name }: Component) => {
@@ -58,10 +60,20 @@ const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd 
                 >
                   <i className="fa fa-cube"></i>
                 </button>
-                <button type="button" className="btn btn-success" title="Add property">
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  title="Add property"
+                  onClick={() => onPropAdd(component.id)}
+                >
                   <i className="fa fa-plug"></i>
                 </button>
-                <button type="button" className="btn btn-success" title="Add hook">
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  title="Add hook"
+                  onClick={() => onHookAdd(component.id)}
+                >
                   <i className="fa fa-microchip"></i>
                 </button>
               </div>

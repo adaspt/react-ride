@@ -26,7 +26,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
   const { project, projectError, projectLoading } = useProject(projectId);
   const { diagram, diagramError, diagramLoading } = useDiagram(projectId, diagramId);
   const selection = useSelection();
-  const { tree, treeError, treeLoading, updateComponent, addComponent } = useComponentTree(
+  const { tree, treeError, treeLoading, updateComponent, addComponent, addProp, addHook } = useComponentTree(
     projectId,
     diagramId,
     selection.selectComponent
@@ -58,6 +58,10 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       onComponentUpdated={updateComponent}
       onTabChange={selection.selectTab}
       onComponentAdd={addComponent}
+      onPropSelect={(componentId, propIndex) => selection.selectComponent(componentId, propIndex, null)}
+      onPropAdd={addProp}
+      onHookSelect={(componentId, hookIndex) => selection.selectComponent(componentId, null, hookIndex)}
+      onHookAdd={addHook}
     />
   );
 

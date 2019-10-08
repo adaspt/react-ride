@@ -78,6 +78,28 @@ export const addComponentAction = (parentId: string, componentId: string) => (
   }
 });
 
+export const addPropAction = (componentId: string) => (tree: ComponentTree): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      properties: [...tree.components[componentId].properties, { name: 'prop', type: 'string' }]
+    }
+  }
+});
+
+export const addHookAction = (componentId: string) => (tree: ComponentTree): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      hooks: [...tree.components[componentId].hooks, { name: 'useHook' }]
+    }
+  }
+});
+
 // -----------------------------------------------------------
 
 export const saveComponentTree = (tree: ComponentTree) => {

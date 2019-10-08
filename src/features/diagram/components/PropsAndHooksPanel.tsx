@@ -4,18 +4,34 @@ import clsx from 'clsx';
 import { Component } from '../../../model/component';
 import Panel from '../../../components/Panel';
 import { DiagramTab } from '../hooks/useSelection';
+import ComponentItems from './ComponentItems';
 
 interface Props {
   component: Component;
   selectedTab: DiagramTab;
-  changeTab: (tab: DiagramTab) => void;
+  selectedPropIndex: number | null;
+  selectedHookIndex: number | null;
+  onTabChange: (tab: DiagramTab) => void;
+  onPropSelect: (componentId: string, index: number) => void;
+  onHookSelect: (componentId: string, index: number) => void;
 }
 
-const PropsAndHooksPanel: React.FC<Props> = ({ component, selectedTab, changeTab }) => {
+const PropsAndHooksPanel: React.FC<Props> = ({
+  component,
+  selectedTab,
+  selectedPropIndex,
+  selectedHookIndex,
+  onTabChange,
+  onPropSelect,
+  onHookSelect
+}) => {
   const handleTabChange = (tab: DiagramTab): React.MouseEventHandler => e => {
     e.preventDefault();
-    changeTab(tab);
+    onTabChange(tab);
   };
+
+  const props = component.properties.map(x => `${x.name}: ${x.type}`);
+  const hooks = component.hooks.map(x => x.name);
 
   return (
     <Panel continuous fill>
@@ -40,6 +56,24 @@ const PropsAndHooksPanel: React.FC<Props> = ({ component, selectedTab, changeTab
             </a>
           </li>
         </ul>
+      </div>
+      <div className="flex-fill position-relative">
+        <div className="absolute-fill overflow-auto">
+          {selectedTab === 'props' && (
+            <ComponentItems
+              items={props}
+              selectedIndex={selectedPropIndex}
+              onSelect={index => onPropSelect(component.id, index)}
+            />
+          )}
+          {selectedTab === 'hooks' && (
+            <ComponentItems
+              items={hooks}
+              selectedIndex={selectedHookIndex}
+              onSelect={index => onHookSelect(component.id, index)}
+            />
+          )}
+        </div>
       </div>
     </Panel>
   );
