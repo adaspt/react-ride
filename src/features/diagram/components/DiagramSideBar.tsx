@@ -5,6 +5,7 @@ import { Diagram } from '../../../model/diagrams';
 import { ComponentTree, Component, ComponentProperty, ComponentHook } from '../../../model/component';
 import { DiagramTab } from '../hooks/useSelection';
 import DiagramPanel from './DiagramPanel';
+import ExportPanel from './ExportPanel';
 import ComponentPanel from './ComponentPanel';
 import PropsAndHooksPanel from './PropsAndHooksPanel';
 import PropPanel from './PropPanel';
@@ -110,6 +111,7 @@ const DiagramSideBar: React.FC<Props> = ({
   return (
     <>
       <DiagramPanel project={project} diagram={diagram} onSaveContent={onSaveContent} />
+      {!selectedComponent && <ExportPanel diagram={diagram} tree={tree} />}
       {selectedComponent && (
         <ComponentPanel
           component={selectedComponent}
