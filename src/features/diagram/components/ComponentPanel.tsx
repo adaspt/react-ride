@@ -12,12 +12,14 @@ interface Props {
 }
 
 const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd }) => {
-  const { values, change, handleChange, handleSubmit } = useForm(component);
+  const { values, handleChange, handleSubmit } = useForm(component);
 
-  const handleUpdate = ({ name, width }: Component) => {
-    onUpdated(component.id, { name, width });
+  const handleUpdate = ({ name }: Component) => {
+    onUpdated(component.id, { name });
     return Promise.resolve();
   };
+
+  const handleWidthChange = (width: number) => onUpdated(component.id, { width });
 
   const handleComponentAdd = () => onComponentAdd(component.id);
 
@@ -27,22 +29,26 @@ const ComponentPanel: React.FC<Props> = ({ component, onUpdated, onComponentAdd 
       <div className="card-body">
         <form onSubmit={handleSubmit(handleUpdate)}>
           <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              autoFocus
-              value={values.name}
-              onChange={handleChange('name')}
-            />
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                autoFocus
+                value={values.name}
+                onChange={handleChange('name')}
+              />
+              <div className="input-group-append">
+                <button type="submit" className="btn btn-outline-primary">
+                  <i className="fa fa-check"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div className="form-group">
-            <SizeInput value={values.width} onChange={width => change('width', width)} />
+            <SizeInput value={component.width} onChange={handleWidthChange} />
           </div>
           <div className="d-flex">
-            <button type="submit" className="btn btn-primary mr-2">
-              OK
-            </button>
-            <div className="btn-toolbar ml-auto">
+            <div className="btn-toolbar">
               <div className="btn-group mr-2">
                 <button
                   type="button"
