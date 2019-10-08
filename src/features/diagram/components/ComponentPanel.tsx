@@ -12,6 +12,10 @@ interface Props {
   onComponentAdd: (parentId: string) => void;
   onPropAdd: (componentId: string) => void;
   onHookAdd: (componentId: string) => void;
+  onMoveIn: (componentId: string) => void;
+  onMoveOut: (componentId: string) => void;
+  onMoveUp: (componentId: string) => void;
+  onMoveDown: (componentId: string) => void;
 }
 
 const ComponentPanel: React.FC<Props> = ({
@@ -20,7 +24,11 @@ const ComponentPanel: React.FC<Props> = ({
   onDelete,
   onComponentAdd,
   onPropAdd,
-  onHookAdd
+  onHookAdd,
+  onMoveIn,
+  onMoveOut,
+  onMoveUp,
+  onMoveDown
 }) => {
   const { values, handleChange, handleSubmit } = useForm(component);
 
@@ -32,6 +40,11 @@ const ComponentPanel: React.FC<Props> = ({
   const handleWidthChange = (width: number) => onUpdate(component.id, { width });
 
   const handleComponentAdd = () => onComponentAdd(component.id);
+
+  const handleMoveIn = () => onMoveIn(component.id);
+  const handleMoveOut = () => onMoveOut(component.id);
+  const handleMoveUp = () => onMoveUp(component.id);
+  const handleMoveDown = () => onMoveDown(component.id);
 
   return (
     <Panel continuous>
@@ -59,16 +72,16 @@ const ComponentPanel: React.FC<Props> = ({
           </div>
           <div className="btn-toolbar">
             <div className="btn-group mr-2">
-              <button type="button" className="btn btn-secondary" title="Move in">
+              <button type="button" className="btn btn-secondary" title="Move in" onClick={handleMoveIn}>
                 <i className="fa fa-arrow-circle-up"></i>
               </button>
-              <button type="button" className="btn btn-secondary" title="Move out">
+              <button type="button" className="btn btn-secondary" title="Move out" onClick={handleMoveOut}>
                 <i className="fa fa-arrow-circle-down"></i>
               </button>
-              <button type="button" className="btn btn-secondary" title="Move up">
+              <button type="button" className="btn btn-secondary" title="Move up" onClick={handleMoveUp}>
                 <i className="fa fa-arrow-up"></i>
               </button>
-              <button type="button" className="btn btn-secondary" title="Move down">
+              <button type="button" className="btn btn-secondary" title="Move down" onClick={handleMoveDown}>
                 <i className="fa fa-arrow-down"></i>
               </button>
               <button

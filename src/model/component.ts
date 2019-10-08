@@ -1,5 +1,5 @@
 import { omit } from '../utils/objects';
-import { without } from '../utils/arrays';
+import { without, append, insert, swap } from '../utils/arrays';
 
 export interface ComponentProperty {
   name: string;
@@ -83,6 +83,114 @@ export const deleteComponentAction = (componentId: string) => (tree: ComponentTr
     children: {
       ...omit<string[]>(componentIdsToRemove)(tree.children),
       [parentId]: without([componentId])(tree.children[parentId])
+    }
+  };
+};
+
+export const moveComponentInAction = (componentId: string) => (tree: ComponentTree): ComponentTree => {
+  const prevParentId = tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return tree;
+  }
+
+  const siblings = tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return tree;
+  }
+
+  const nextParentId = siblings[prevIndex - 1];
+
+  return {
+    ...tree,
+    components: {
+      ...tree.components,
+      [componentId]: {
+        ...tree.components[componentId],
+        parentId: nextParentId
+      }
+    },
+    children: {
+      ...tree.children,
+      [prevParentId]: without([componentId])(tree.children[prevParentId]),
+      [nextParentId]: append(componentId)(tree.children[nextParentId])
+    }
+  };
+};
+
+export const moveComponentOutAction = (componentId: string) => (tree: ComponentTree): ComponentTree => {
+  const prevParentId = tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return tree;
+  }
+
+  const nextParentId = tree.components[prevParentId].parentId;
+  if (!nextParentId) {
+    return tree;
+  }
+
+  const siblings = tree.children[nextParentId];
+  const parentIndex = siblings.indexOf(prevParentId);
+
+  return {
+    ...tree,
+    components: {
+      ...tree.components,
+      [componentId]: {
+        ...tree.components[componentId],
+        parentId: nextParentId
+      }
+    },
+    children: {
+      ...tree.children,
+      [prevParentId]: without([componentId])(tree.children[prevParentId]),
+      [nextParentId]: insert(parentIndex + 1, componentId)(tree.children[nextParentId])
+    }
+  };
+};
+
+export const moveComponentUpAction = (componentId: string) => (tree: ComponentTree): ComponentTree => {
+  const prevParentId = tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return tree;
+  }
+
+  const siblings = tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === 0) {
+    return tree;
+  }
+
+  const nextIndex = prevIndex - 1;
+
+  return {
+    ...tree,
+    children: {
+      ...tree.children,
+      [prevParentId]: swap<string>(prevIndex, nextIndex)(tree.children[prevParentId])
+    }
+  };
+};
+
+export const moveComponentDownAction = (componentId: string) => (tree: ComponentTree): ComponentTree => {
+  const prevParentId = tree.components[componentId].parentId;
+  if (!prevParentId) {
+    return tree;
+  }
+
+  const siblings = tree.children[prevParentId];
+  const prevIndex = siblings.indexOf(componentId);
+  if (prevIndex === siblings.length - 1) {
+    return tree;
+  }
+
+  const nextIndex = prevIndex + 1;
+
+  return {
+    ...tree,
+    children: {
+      ...tree.children,
+      [prevParentId]: swap<string>(prevIndex, nextIndex)(tree.children[prevParentId])
     }
   };
 };

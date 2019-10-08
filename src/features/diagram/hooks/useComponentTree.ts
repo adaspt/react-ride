@@ -8,6 +8,10 @@ import {
   buildComponentTree,
   updateComponentAction,
   deleteComponentAction,
+  moveComponentInAction,
+  moveComponentOutAction,
+  moveComponentUpAction,
+  moveComponentDownAction,
   addComponentAction,
   addPropAction,
   updatePropAction,
@@ -51,6 +55,18 @@ export const useComponentTree = (
     deleteComponent: (id: string) => {
       update(ifLoaded(deleteComponentAction(id)));
       select(null, null, null);
+    },
+    moveComponentIn: (id: string) => {
+      update(ifLoaded(moveComponentInAction(id)));
+    },
+    moveComponentOut: (id: string) => {
+      update(ifLoaded(moveComponentOutAction(id)));
+    },
+    moveComponentUp: (id: string) => {
+      update(ifLoaded(moveComponentUpAction(id)));
+    },
+    moveComponentDown: (id: string) => {
+      update(ifLoaded(moveComponentDownAction(id)));
     },
     addComponent: (parentId: string) => {
       const componentId = uniqueId();

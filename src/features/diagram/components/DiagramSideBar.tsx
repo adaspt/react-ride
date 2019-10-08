@@ -21,6 +21,10 @@ interface Props {
   onTabChange: (tab: DiagramTab) => void;
   onComponentUpdate: (componentId: string, changes: Partial<Component>) => void;
   onComponentDelete: (componentId: string) => void;
+  onComponentMoveIn: (componentId: string) => void;
+  onComponentMoveOut: (componentId: string) => void;
+  onComponentMoveUp: (componentId: string) => void;
+  onComponentMoveDown: (componentId: string) => void;
   onComponentAdd: (parentId: string) => void;
   onPropSelect: (componentId: string, index: number) => void;
   onPropAdd: (componentId: string) => void;
@@ -45,6 +49,10 @@ const DiagramSideBar: React.FC<Props> = ({
   onTabChange,
   onComponentUpdate,
   onComponentDelete,
+  onComponentMoveIn,
+  onComponentMoveOut,
+  onComponentMoveUp,
+  onComponentMoveDown,
   onComponentAdd,
   onPropSelect,
   onPropAdd,
@@ -108,6 +116,10 @@ const DiagramSideBar: React.FC<Props> = ({
           onComponentAdd={onComponentAdd}
           onPropAdd={handlePropAdd}
           onHookAdd={handleHookAdd}
+          onMoveIn={onComponentMoveIn}
+          onMoveOut={onComponentMoveOut}
+          onMoveUp={onComponentMoveUp}
+          onMoveDown={onComponentMoveDown}
         />
       )}
       {selectedComponent && (

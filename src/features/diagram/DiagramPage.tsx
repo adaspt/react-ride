@@ -32,6 +32,10 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     treeLoading,
     updateComponent,
     deleteComponent,
+    moveComponentIn,
+    moveComponentOut,
+    moveComponentUp,
+    moveComponentDown,
     addComponent,
     addProp,
     updateProp,
@@ -67,6 +71,10 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       onTabChange={selection.selectTab}
       onComponentUpdate={updateComponent}
       onComponentDelete={deleteComponent}
+      onComponentMoveIn={moveComponentIn}
+      onComponentMoveOut={moveComponentOut}
+      onComponentMoveUp={moveComponentUp}
+      onComponentMoveDown={moveComponentDown}
       onComponentAdd={addComponent}
       onPropSelect={(componentId, propIndex) => selection.selectComponent(componentId, propIndex, null)}
       onPropAdd={addProp}
