@@ -19,7 +19,7 @@ interface Props {
   selectedPropIndex: number | null;
   selectedHookIndex: number | null;
   onTabChange: (tab: DiagramTab) => void;
-  onComponentUpdated: (componentId: string, changes: Partial<Component>) => void;
+  onComponentUpdate: (componentId: string, changes: Partial<Component>) => void;
   onComponentDelete: (componentId: string) => void;
   onComponentAdd: (parentId: string) => void;
   onPropSelect: (componentId: string, index: number) => void;
@@ -43,7 +43,7 @@ const DiagramSideBar: React.FC<Props> = ({
   selectedPropIndex,
   selectedHookIndex,
   onTabChange,
-  onComponentUpdated,
+  onComponentUpdate,
   onComponentDelete,
   onComponentAdd,
   onPropSelect,
@@ -103,7 +103,7 @@ const DiagramSideBar: React.FC<Props> = ({
       {selectedComponent && (
         <ComponentPanel
           component={selectedComponent}
-          onUpdated={onComponentUpdated}
+          onUpdate={onComponentUpdate}
           onDelete={onComponentDelete}
           onComponentAdd={onComponentAdd}
           onPropAdd={handlePropAdd}

@@ -65,7 +65,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
       selectedPropIndex={selection.propIndex}
       selectedHookIndex={selection.hookIndex}
       onTabChange={selection.selectTab}
-      onComponentUpdated={updateComponent}
+      onComponentUpdate={updateComponent}
       onComponentDelete={deleteComponent}
       onComponentAdd={addComponent}
       onPropSelect={(componentId, propIndex) => selection.selectComponent(componentId, propIndex, null)}

@@ -7,7 +7,7 @@ import SizeInput from '../../../components/SizeInput';
 
 interface Props {
   component: Component;
-  onUpdated: (componentId: string, changes: Partial<Component>) => void;
+  onUpdate: (componentId: string, changes: Partial<Component>) => void;
   onDelete: (componentId: string) => void;
   onComponentAdd: (parentId: string) => void;
   onPropAdd: (componentId: string) => void;
@@ -16,7 +16,7 @@ interface Props {
 
 const ComponentPanel: React.FC<Props> = ({
   component,
-  onUpdated,
+  onUpdate,
   onDelete,
   onComponentAdd,
   onPropAdd,
@@ -25,11 +25,11 @@ const ComponentPanel: React.FC<Props> = ({
   const { values, handleChange, handleSubmit } = useForm(component);
 
   const handleUpdate = ({ name }: Component) => {
-    onUpdated(component.id, { name });
+    onUpdate(component.id, { name });
     return Promise.resolve();
   };
 
-  const handleWidthChange = (width: number) => onUpdated(component.id, { width });
+  const handleWidthChange = (width: number) => onUpdate(component.id, { width });
 
   const handleComponentAdd = () => onComponentAdd(component.id);
 
@@ -57,44 +57,54 @@ const ComponentPanel: React.FC<Props> = ({
           <div className="form-group">
             <SizeInput value={component.width} onChange={handleWidthChange} />
           </div>
-          <div className="d-flex">
-            <div className="btn-toolbar">
-              <div className="btn-group mr-2">
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  title="Add component"
-                  onClick={handleComponentAdd}
-                >
-                  <i className="fa fa-cube"></i>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  title="Add property"
-                  onClick={() => onPropAdd(component.id)}
-                >
-                  <i className="fa fa-plug"></i>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  title="Add hook"
-                  onClick={() => onHookAdd(component.id)}
-                >
-                  <i className="fa fa-microchip"></i>
-                </button>
-              </div>
+          <div className="btn-toolbar">
+            <div className="btn-group mr-2">
+              <button type="button" className="btn btn-secondary" title="Move in">
+                <i className="fa fa-arrow-circle-up"></i>
+              </button>
+              <button type="button" className="btn btn-secondary" title="Move out">
+                <i className="fa fa-arrow-circle-down"></i>
+              </button>
+              <button type="button" className="btn btn-secondary" title="Move up">
+                <i className="fa fa-arrow-up"></i>
+              </button>
+              <button type="button" className="btn btn-secondary" title="Move down">
+                <i className="fa fa-arrow-down"></i>
+              </button>
               <button
                 type="button"
-                disabled={!component.parentId}
-                className="btn btn-danger"
-                title="Delete component"
-                onClick={() => onDelete(component.id)}
+                className="btn btn-success"
+                title="Add component"
+                onClick={handleComponentAdd}
               >
-                <i className="fa fa-trash"></i>
+                <i className="fa fa-cube"></i>
+              </button>
+              <button
+                type="button"
+                className="btn btn-success"
+                title="Add property"
+                onClick={() => onPropAdd(component.id)}
+              >
+                <i className="fa fa-plug"></i>
+              </button>
+              <button
+                type="button"
+                className="btn btn-success"
+                title="Add hook"
+                onClick={() => onHookAdd(component.id)}
+              >
+                <i className="fa fa-microchip"></i>
               </button>
             </div>
+            <button
+              type="button"
+              disabled={!component.parentId}
+              className="btn btn-danger"
+              title="Delete component"
+              onClick={() => onDelete(component.id)}
+            >
+              <i className="fa fa-trash"></i>
+            </button>
           </div>
         </form>
       </div>
