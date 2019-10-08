@@ -98,7 +98,7 @@ export const updatePropAction = (componentId: string, propIndex: number, values:
     [componentId]: {
       ...tree.components[componentId],
       properties: [
-        ...tree.components[componentId].properties.slice(0, propIndex - 1),
+        ...tree.components[componentId].properties.slice(0, propIndex),
         values,
         ...tree.components[componentId].properties.slice(propIndex + 1)
       ]
@@ -115,7 +115,7 @@ export const deletePropAction = (componentId: string, propIndex: number) => (
     [componentId]: {
       ...tree.components[componentId],
       properties: [
-        ...tree.components[componentId].properties.slice(0, propIndex - 1),
+        ...tree.components[componentId].properties.slice(0, propIndex),
         ...tree.components[componentId].properties.slice(propIndex + 1)
       ]
     }
@@ -129,6 +129,39 @@ export const addHookAction = (componentId: string) => (tree: ComponentTree): Com
     [componentId]: {
       ...tree.components[componentId],
       hooks: [...tree.components[componentId].hooks, { name: 'useHook' }]
+    }
+  }
+});
+
+export const updateHookAction = (componentId: string, hookIndex: number, values: ComponentHook) => (
+  tree: ComponentTree
+): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      hooks: [
+        ...tree.components[componentId].hooks.slice(0, hookIndex),
+        values,
+        ...tree.components[componentId].hooks.slice(hookIndex + 1)
+      ]
+    }
+  }
+});
+
+export const deleteHookAction = (componentId: string, hookIndex: number) => (
+  tree: ComponentTree
+): ComponentTree => ({
+  ...tree,
+  components: {
+    ...tree.components,
+    [componentId]: {
+      ...tree.components[componentId],
+      hooks: [
+        ...tree.components[componentId].hooks.slice(0, hookIndex),
+        ...tree.components[componentId].hooks.slice(hookIndex + 1)
+      ]
     }
   }
 });

@@ -4,13 +4,16 @@ import {
   ComponentTree,
   Component,
   ComponentProperty,
+  ComponentHook,
   buildComponentTree,
   updateComponentAction,
   addComponentAction,
   addPropAction,
   updatePropAction,
   addHookAction,
-  deletePropAction
+  deletePropAction,
+  updateHookAction,
+  deleteHookAction
 } from '../../../model/component';
 import { uniqueId } from '../../../utils/strings';
 import { getComponents } from '../../../api/components';
@@ -71,6 +74,18 @@ export const useComponentTree = (
       update(ifLoaded(addHookAction(componentId)));
       if (tree) {
         select(componentId, null, tree.components[componentId].hooks.length);
+      }
+    },
+    updateHook: (componentId: string, hookIndex: number, values: ComponentHook) => {
+      update(ifLoaded(updateHookAction(componentId, hookIndex, values)));
+      if (tree) {
+        select(componentId, null, null);
+      }
+    },
+    deleteHook: (componentId: string, hookIndex: number) => {
+      update(ifLoaded(deleteHookAction(componentId, hookIndex)));
+      if (tree) {
+        select(componentId, null, null);
       }
     }
   };

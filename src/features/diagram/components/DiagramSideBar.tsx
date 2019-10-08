@@ -2,12 +2,13 @@ import React from 'react';
 
 import { Project } from '../../../model/projects';
 import { Diagram } from '../../../model/diagrams';
-import { ComponentTree, Component, ComponentProperty } from '../../../model/component';
+import { ComponentTree, Component, ComponentProperty, ComponentHook } from '../../../model/component';
 import { DiagramTab } from '../hooks/useSelection';
 import DiagramPanel from './DiagramPanel';
 import ComponentPanel from './ComponentPanel';
 import PropsAndHooksPanel from './PropsAndHooksPanel';
 import PropPanel from './PropPanel';
+import HookPanel from './HookPanel';
 
 interface Props {
   project: Project;
@@ -27,6 +28,9 @@ interface Props {
   onPropDelete: (componentId: string, propIndex: number) => void;
   onHookSelect: (componentId: string, index: number) => void;
   onHookAdd: (componentId: string) => void;
+  onHookUpdated: (componentId: string, hookIndex: number, values: ComponentHook) => void;
+  onHookCancel: () => void;
+  onHookDelete: (componentId: string, hookIndex: number) => void;
 }
 
 const DiagramSideBar: React.FC<Props> = ({
@@ -46,16 +50,14 @@ const DiagramSideBar: React.FC<Props> = ({
   onPropCancel,
   onPropDelete,
   onHookSelect,
-  onHookAdd
+  onHookAdd,
+  onHookUpdated,
+  onHookCancel,
+  onHookDelete
 }) => {
   const handlePropAdd = (componentId: string) => {
     onTabChange('props');
     onPropAdd(componentId);
-  };
-
-  const handleHookAdd = (componentId: string) => {
-    onTabChange('hooks');
-    onHookAdd(componentId);
   };
 
   const handlePropUpdated = async (values: ComponentProperty) => {
@@ -70,9 +72,29 @@ const DiagramSideBar: React.FC<Props> = ({
     }
   };
 
+  const handleHookAdd = (componentId: string) => {
+    onTabChange('hooks');
+    onHookAdd(componentId);
+  };
+
+  const handleHookUpdated = async (values: ComponentHook) => {
+    if (selectedComponentId && selectedHookIndex != null) {
+      onHookUpdated(selectedComponentId, selectedHookIndex, values);
+    }
+  };
+
+  const handleHookDelete = () => {
+    if (selectedComponentId && selectedHookIndex != null) {
+      onHookDelete(selectedComponentId, selectedHookIndex);
+    }
+  };
+
   const selectedComponent = tree && selectedComponentId && tree.components[selectedComponentId];
   const selectedProp =
     selectedComponent && selectedPropIndex != null && selectedComponent.properties[selectedPropIndex];
+  const selectedHook =
+    selectedComponent && selectedHookIndex != null && selectedComponent.hooks[selectedHookIndex];
+
   return (
     <>
       <DiagramPanel project={project} diagram={diagram} />
@@ -98,10 +120,20 @@ const DiagramSideBar: React.FC<Props> = ({
       )}
       {selectedProp && (
         <PropPanel
+          key={`${selectedComponentId}.${selectedPropIndex}`}
           prop={selectedProp}
           onUpdate={handlePropUpdated}
           onCancel={onPropCancel}
           onDelete={handlePropDelete}
+        />
+      )}
+      {selectedHook && (
+        <HookPanel
+          key={`${selectedComponentId}.${selectedHookIndex}`}
+          hook={selectedHook}
+          onUpdate={handleHookUpdated}
+          onCancel={onHookCancel}
+          onDelete={handleHookDelete}
         />
       )}
     </>
