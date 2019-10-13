@@ -7,13 +7,37 @@ service cloud.firestore {
 
     match /users/{user} {
       allow read: if isAuthenticated()
-        && request.auth.uid == user
+        && request.auth.uid == user;
       allow create, update: if isAuthenticated()
       	&& request.auth.uid == user
         && request.resource.data.keys().hasAll(['displayName', 'email'])
         && request.resource.data.size() == 2
         && request.resource.data.displayName is string
-        && request.resource.data.email is string
+        && request.resource.data.email is string;
+    }
+
+    match /projects/{project} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['name', 'ownerId'])
+        && request.resource.data.size == 2
+        && request.resource.data.name is string
+        && request.resource.data.ownerId is string;
+    }
+    
+    match /projects/{project}/diagrams/{diagram} {
+    	allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+      	&& request.resource.data.keys().hasAll(['name'])
+        && request.resource.data.size() == 1
+        && request.resource.data.name is string;
+    }
+    
+    match /projects/{project}/components/{component} {
+    	allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+      	&& request.resource.data.keys().hasAll(['tree'])
+        && request.resource.data.size() == 1;
     }
   }
 }

@@ -10,7 +10,7 @@ interface Props extends RouteComponentProps {
 
 const HomePage: React.FC<Props> = ({ navigate }) => {
   useEffect(() => {
-    navigate && navigate('/sandbox');
+    navigate && navigate('/projects');
   }, [navigate]);
 
   return null;
