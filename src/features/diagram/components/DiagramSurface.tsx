@@ -4,7 +4,7 @@ import { ComponentTree } from '../../../model/component';
 import Error from '../../../components/Error';
 import Loading from '../../../components/Loading';
 import Path from './Path';
-import Component from '../../sandbox/components/Component';
+import Component from './Component';
 
 interface Props {
   tree: ComponentTree | null;

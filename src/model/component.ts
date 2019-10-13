@@ -1,5 +1,8 @@
-import { omit } from '../utils/objects';
-import { without, append, insert, swap } from '../utils/arrays';
+import append from 'ramda/es/append';
+import insert from 'ramda/es/insert';
+import move from 'ramda/es/move';
+import omit from 'ramda/es/omit';
+import without from 'ramda/es/without';
 
 export interface ComponentProperty {
   name: string;
@@ -52,9 +55,9 @@ export const deleteComponentAction = (componentId: string) => (tree: ComponentTr
 
   return {
     ...tree,
-    components: omit<Component>(componentIdsToRemove)(tree.components),
+    components: omit(componentIdsToRemove)(tree.components),
     children: {
-      ...omit<string[]>(componentIdsToRemove)(tree.children),
+      ...omit(componentIdsToRemove)(tree.children),
       [parentId]: without([componentId])(tree.children[parentId])
     }
   };
@@ -86,7 +89,7 @@ export const moveComponentInAction = (componentId: string) => (tree: ComponentTr
     children: {
       ...tree.children,
       [prevParentId]: without([componentId])(tree.children[prevParentId]),
-      [nextParentId]: append(componentId)(tree.children[nextParentId])
+      [nextParentId]: append(componentId, tree.children[nextParentId])
     }
   };
 };
@@ -117,7 +120,7 @@ export const moveComponentOutAction = (componentId: string) => (tree: ComponentT
     children: {
       ...tree.children,
       [prevParentId]: without([componentId])(tree.children[prevParentId]),
-      [nextParentId]: insert(parentIndex + 1, componentId)(tree.children[nextParentId])
+      [nextParentId]: insert(parentIndex + 1, componentId, tree.children[nextParentId])
     }
   };
 };
@@ -140,7 +143,7 @@ export const moveComponentUpAction = (componentId: string) => (tree: ComponentTr
     ...tree,
     children: {
       ...tree.children,
-      [prevParentId]: swap<string>(prevIndex, nextIndex)(tree.children[prevParentId])
+      [prevParentId]: move(prevIndex, nextIndex, tree.children[prevParentId])
     }
   };
 };
@@ -163,7 +166,7 @@ export const moveComponentDownAction = (componentId: string) => (tree: Component
     ...tree,
     children: {
       ...tree.children,
-      [prevParentId]: swap<string>(prevIndex, nextIndex)(tree.children[prevParentId])
+      [prevParentId]: move(prevIndex, nextIndex, tree.children[prevParentId])
     }
   };
 };

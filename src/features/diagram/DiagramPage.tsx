@@ -51,7 +51,7 @@ const DiagramPage: React.FC<Props> = ({ projectId = '', diagramId = '' }) => {
     return <Error message={error} />;
   }
 
-  if (projectLoading || diagramLoading) {
+  if ((projectLoading && !project) || diagramLoading) {
     return <Loading />;
   }
 

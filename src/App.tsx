@@ -6,7 +6,6 @@ import Navbar from './components/Navbar';
 import Loading from './components/Loading';
 import Error from './components/Error';
 import HomePage from './features/home/HomePage';
-import SandboxPage from './features/sandbox/SandboxPage';
 import SignInPage from './features/signin/SignInPage';
 import ProjectsPage from './features/projects/ProjectsPage';
 import ProjectPage from './features/project/ProjectPage';
@@ -34,7 +33,6 @@ const App: React.FC = () => {
           <ProjectsPage path="/projects" user={user} />
           <ProjectPage path="/projects/:projectId" user={user} />
           <DiagramPage path="/projects/:projectId/:diagramId" user={user} />
-          <SandboxPage path="/sandbox" />
           <SignInPage path="/signin" authenticated={authenticated} onSignInWithGoogle={signIn} />
         </Router>
       </ProjectProvider>

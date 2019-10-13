@@ -36,11 +36,6 @@ const Navbar: React.FC<Props> = ({ user, onSignOut }) => {
             )
           }
         </Match>
-        <li className="nav-item">
-          <Link to="/sandbox" getProps={getNavLinkProps(false)}>
-            Sandbox
-          </Link>
-        </li>
       </ul>
 
       {user && (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { compose } from '../../../utils/functions';
+import compose from 'ramda/es/compose';
 
 export type DiagramTab = 'props' | 'hooks';
 
