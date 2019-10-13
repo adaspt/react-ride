@@ -1,19 +1,18 @@
 import { useEffect } from 'react';
 
-import { Project } from '../../../model/projects';
-import { getProject } from '../../../api/projects';
-import { useDatabase } from '../../../hooks/useDatabase';
-import { useAsyncData } from '../../../hooks/useAsyncData';
+import { useProjectContext } from '../../entities/hooks/useProjectProvider';
 
 export const useProject = (projectId: string) => {
-  const db = useDatabase();
-  const { data: project, error: projectError, loading: projectLoading, load } = useAsyncData<Project>();
+  const { projects, projectsError, projectsLoading, loadProjects } = useProjectContext();
 
-  useEffect(load(() => db.execute(getProject(projectId))), [projectId]);
+  useEffect(loadProjects(), []);
+
+  const project = projects && projects[projectId];
+  const projectError = projectsError || (projects && !project && 'Project does not exist.');
 
   return {
     project,
     projectError,
-    projectLoading
+    projectLoading: projectsLoading
   };
 };

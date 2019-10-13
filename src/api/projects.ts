@@ -23,15 +23,3 @@ export const getProjects = (): ApiRequest<Project[]> => async db => {
     .get();
   return result.docs.map(mapSnapshotToModel);
 };
-
-export const getProject = (projectId: string): ApiRequest<Project> => async db => {
-  const result = await db
-    .collection(getCollectionPath())
-    .doc(projectId)
-    .get();
-  if (!result.exists) {
-    throw new TypeError('Project does not exist.');
-  }
-
-  return mapSnapshotToModel(result);
-};

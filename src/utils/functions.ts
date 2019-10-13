@@ -2,6 +2,8 @@ export type Fn0<Out> = () => Out;
 export type Fn1<A, Out = A> = (a: A) => Out;
 export type Fn2<A, B = A, Out = B> = (a: A, b: B) => Out;
 
+export type AsyncFn1<A, Out> = (a: A) => Out | PromiseLike<Out> | Promise<Out>;
+
 export function pipe<T1 extends any[], Out>(fn1: (...args: T1) => Out): (...args: T1) => Out; // prettier-ignore
 export function pipe<T1 extends any[], T2, Out>(fn1: (...args: T1) => T2, fn2: Fn1<T2, Out>): (...args: T1) => Out; // prettier-ignore
 export function pipe<T1 extends any[], T2, T3, Out>(fn1: (...args: T1) => T2, fn2: Fn1<T2, T3>, fn3: Fn1<T3, Out>): (...args: T1) => Out; // prettier-ignore
@@ -14,6 +16,18 @@ export function pipe(...fns: ReadonlyArray<(...args: any[]) => any>) {
     const first = fns[0];
     const rest = fns.slice(1);
     return rest.reduce((p, fn) => fn(p), first(...args));
+  };
+}
+
+export function asyncPipe<T1 extends any[], T2, Out>(fn1: (...args: T1) => (T2 | PromiseLike<T2> | Promise<T2>), fn2: AsyncFn1<T2, Out>): (...args: T1) => Promise<Out>; // prettier-ignore
+export function asyncPipe<T1 extends any[], T2, T3, Out>(fn1: (...args: T1) => (T2 | PromiseLike<T2> | Promise<T2>), fn2: AsyncFn1<T2, T3>, fn3: AsyncFn1<T3, Out>): (...args: T1) => Promise<Out>; // prettier-ignore
+export function asyncPipe<T1 extends any[], T2, T3, T4, Out>(fn1: (...args: T1) => (T2 | PromiseLike<T2> | Promise<T2>), fn2: AsyncFn1<T2, T3>, fn3: AsyncFn1<T3, T4>, fn4: AsyncFn1<T4, Out>): (...args: T1) => Promise<Out>; // prettier-ignore
+export function asyncPipe<T1 extends any[], T>(
+  first: (...args: T1) => T | PromiseLike<T> | Promise<T>,
+  ...rest: ReadonlyArray<(x: T) => Promise<T>>
+) {
+  return (...args: T1) => {
+    return rest.reduce(async (y, f) => f(await y), first(...args));
   };
 }
 

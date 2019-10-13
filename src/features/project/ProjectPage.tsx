@@ -29,7 +29,7 @@ const ProjectPage: React.FC<Props> = ({ projectId = '', navigate }) => {
     return <Error message={projectError} />;
   }
 
-  if (projectLoading) {
+  if (projectLoading && !project) {
     return <Loading />;
   }
 

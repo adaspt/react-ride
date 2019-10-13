@@ -1,18 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { Project } from '../../../model/projects';
-import { getProjects } from '../../../api/projects';
-import { useDatabase } from '../../../hooks/useDatabase';
-import { useAsyncData } from '../../../hooks/useAsyncData';
+import { useProjectContext } from '../../entities/hooks/useProjectProvider';
 
 export const useProjectList = () => {
-  const db = useDatabase();
-  const { data: projects, error: projectsError, loading: projectsLoading, load } = useAsyncData<Project[]>();
+  const { projects, projectsError, projectsLoading, loadProjects } = useProjectContext();
 
-  useEffect(load(() => db.execute(getProjects())), []);
+  useEffect(loadProjects(), []);
 
   return {
-    projects,
+    projects: useMemo(() => projects && Object.values(projects), [projects]),
     projectsError,
     projectsLoading
   };

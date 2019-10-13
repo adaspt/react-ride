@@ -11,6 +11,7 @@ import SignInPage from './features/signin/SignInPage';
 import ProjectsPage from './features/projects/ProjectsPage';
 import ProjectPage from './features/project/ProjectPage';
 import DiagramPage from './features/diagram/DiagramPage';
+import ProjectProvider from './features/entities/ProjectProvider';
 
 const App: React.FC = () => {
   const { authenticating, authError, user, signIn, signOut } = useSession();
@@ -27,14 +28,16 @@ const App: React.FC = () => {
   return (
     <React.StrictMode>
       <Navbar user={user} onSignOut={signOut} />
-      <Router className="d-flex flex-fill">
-        <HomePage path="/" user={user} />
-        <ProjectsPage path="/projects" user={user} />
-        <ProjectPage path="/projects/:projectId" user={user} />
-        <DiagramPage path="/projects/:projectId/:diagramId" user={user} />
-        <SandboxPage path="/sandbox" />
-        <SignInPage path="/signin" authenticated={authenticated} onSignInWithGoogle={signIn} />
-      </Router>
+      <ProjectProvider>
+        <Router className="d-flex flex-fill">
+          <HomePage path="/" user={user} />
+          <ProjectsPage path="/projects" user={user} />
+          <ProjectPage path="/projects/:projectId" user={user} />
+          <DiagramPage path="/projects/:projectId/:diagramId" user={user} />
+          <SandboxPage path="/sandbox" />
+          <SignInPage path="/signin" authenticated={authenticated} onSignInWithGoogle={signIn} />
+        </Router>
+      </ProjectProvider>
     </React.StrictMode>
   );
 };

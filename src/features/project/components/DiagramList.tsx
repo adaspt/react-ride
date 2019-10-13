@@ -53,7 +53,8 @@ const DiagramList: React.FC<Props> = ({ projectId, error, loading, diagrams, onN
             <h5 className="card-title">
               <i className="fa fa-plus"></i> Add new diagram
             </h5>
-            <a href="#create" className="stretched-link" onClick={handleNewDiagramClick}></a>
+            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+            <a href="#create" className="stretched-link" onClick={handleNewDiagramClick}></a>{' '}
           </div>
         </div>
       </div>
